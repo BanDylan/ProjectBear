@@ -1,0 +1,3 @@
+﻿namespace ProjectBear.CMS.Administration {
+}
+
