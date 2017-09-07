@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectBear.Data
 {
@@ -13,12 +8,21 @@ namespace ProjectBear.Data
         public ProjectBearDataContext()
             : base("Default", throwIfV1Schema: false)
         {
-            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<ProjectBearDataContext, ProjectBear.Migrations.Configuration>("Default"));
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ProjectBearDataContext, Migrations.Configuration>("Default"));
         }
 
         public static ProjectBearDataContext Create()
         {
             return new ProjectBearDataContext();
         }
+
+        public virtual DbSet<Profile> Profile { get; set; }
+        public virtual DbSet<Roster> Roster { get; set; }
+        public virtual DbSet<TimeSlot> TimeSlot { get; set; }
+
+        public virtual DbSet<PlayerInTimeSlot> PlayersInTimeSlot { get; set; }
+        public virtual DbSet<ReserveInTimeSlot> ReservesInTimeSlot { get; set; }
+
+        public virtual DbSet<RosterTemplate> RosterTemplate { get; set; }
     }
 }

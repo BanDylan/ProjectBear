@@ -8,21 +8,18 @@ using System.Threading.Tasks;
 
 namespace ProjectBear.Data
 {
-    public class Roster
+    public class RosterTemplate
     {
-        public Roster()
+        public RosterTemplate()
         {
             TimeSlots = new HashSet<TimeSlot>();
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid RosterId { get; set; }
+        public Guid RosterTemplateId { get; set; }
 
         [Required]
-        public DateTime Date { get; set; }
-
-        [Required]
-        public bool IsPublished { get; set; }
+        public string RosterName { get; set; }
 
         public virtual ICollection<TimeSlot> TimeSlots { get; set; }
     }

@@ -25,6 +25,7 @@ namespace ProjectBear.Data
         public virtual ICollection<PlayerInTimeSlot> PlayerSlots { get; set; }
         public virtual ICollection<ReserveInTimeSlot> ReserveSlots { get; set; }
 
+        [ForeignKey("AspUserId")]
         public virtual ApplicationUser AspUser { get; set; }
     }
 }

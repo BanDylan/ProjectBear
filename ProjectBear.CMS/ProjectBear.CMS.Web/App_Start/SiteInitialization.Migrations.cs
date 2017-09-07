@@ -11,10 +11,9 @@
     using System.Web.Hosting;
 
     public static partial class SiteInitialization
-    { 
+    {
         private static string[] databaseKeys = new[] {
             "Default"
-            , "Northwind"
         };
 
         /// <summary>
@@ -58,11 +57,11 @@
                     if (createFile != null)
                         createFile.Invoke(null, new object[] { dataFile });
                 }
-                    
+
                 SqlConnection.ClearAllPools();
                 return;
             }
-            
+
             foreach (var ck in new[] { "Initial Catalog", "Database", "AttachDBFilename" })
                 if (cb.ContainsKey(ck))
                 {
@@ -115,7 +114,7 @@
                 if (serverConnection.Query(databasesQuery, new { name = catalog }).Any())
                     return;
 
-                var isLocalServer = isSql && 
+                var isLocalServer = isSql &&
                     serverConnection.ConnectionString.IndexOf(@"(localdb)\", StringComparison.OrdinalIgnoreCase) >= 0 ||
                     serverConnection.ConnectionString.IndexOf(@".\") >= 0;
 
@@ -150,14 +149,14 @@
             bool isSqlServer = serverType.StartsWith("SqlServer", StringComparison.OrdinalIgnoreCase);
             bool isOracle = !isSqlServer && serverType.StartsWith("Oracle", StringComparison.OrdinalIgnoreCase);
 
-            // safety check to ensure that we are not modifying an arbitrary database.
-            // remove these lines if you want ProjectBear.CMS migrations to run on your DB.
-            if (!isOracle && cs.ConnectionString.IndexOf(typeof(SiteInitialization).Namespace +
-                    @"_" + databaseKey + "_v1", StringComparison.OrdinalIgnoreCase) < 0)
-            {
-                SkippedMigrations = true;
-                return;
-            }
+            //// safety check to ensure that we are not modifying an arbitrary database.
+            //// remove these lines if you want ProjectBear.CMS migrations to run on your DB.
+            //if (!isOracle && cs.ConnectionString.IndexOf(typeof(SiteInitialization).Namespace +
+            //        @"_" + databaseKey + "_v1", StringComparison.OrdinalIgnoreCase) < 0)
+            //{
+            //    SkippedMigrations = true;
+            //    return;
+            //}
 
             string databaseType = isOracle ? "OracleManaged" : serverType;
             var connectionString = cs.ConnectionString;

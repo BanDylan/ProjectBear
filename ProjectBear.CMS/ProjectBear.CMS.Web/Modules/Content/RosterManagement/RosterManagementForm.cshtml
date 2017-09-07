@@ -1,0 +1,19 @@
+﻿@model ProjectBear.CMS.ViewModels.RosterManagementViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    @Html.ActionLink("Go Back", "Index", "RosterManagement", null, new { @class = "btn btn-primary" })
+    @using (Html.BeginForm("Save", "RosterManagement", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="form-horizontal">
+            <h4 class="margintop40">Roster Management</h4>
+            <hr />
+        </div>
+        <div class="topmargin40">
+            <input type="submit" value="Save" class="btn btn-primary width130" />
+        </div>
+    }
+</div>

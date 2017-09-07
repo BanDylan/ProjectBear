@@ -10,6 +10,8 @@ namespace ProjectBear.Data
 {
     public class PlayerInTimeSlot
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid PlayerInTimeSlotId { get; set; }
         [Required]
         public Guid ProfileId { get; set; }
         [Required]
