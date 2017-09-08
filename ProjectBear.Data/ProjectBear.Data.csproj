@@ -64,6 +64,10 @@
     <Compile Include="Migrations\201709070850477_InitialSetup.Designer.cs">
       <DependentUpon>201709070850477_InitialSetup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709081121227_ChangedTimeSlotsToUseDurationRatherThanFixedTimes.cs" />
+    <Compile Include="Migrations\201709081121227_ChangedTimeSlotsToUseDurationRatherThanFixedTimes.Designer.cs">
+      <DependentUpon>201709081121227_ChangedTimeSlotsToUseDurationRatherThanFixedTimes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ReserveInTimeSlot.cs" />
     <Compile Include="Profile.cs" />
@@ -81,6 +85,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201709070850477_InitialSetup.resx">
       <DependentUpon>201709070850477_InitialSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709081121227_ChangedTimeSlotsToUseDurationRatherThanFixedTimes.resx">
+      <DependentUpon>201709081121227_ChangedTimeSlotsToUseDurationRatherThanFixedTimes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

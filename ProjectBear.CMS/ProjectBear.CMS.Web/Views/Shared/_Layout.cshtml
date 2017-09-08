@@ -20,6 +20,7 @@
     @{Html.RenderPartial(MVC.Views.Shared._LayoutHead);}
     @RenderSection("Head", false)
     <title>@(ViewData["Title"]) - ProjectBear.CMS</title>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 </head>
 <body id="s-@(ViewData["PageId"])Page" class="@(ViewData["BodyClass"]) fixed sidebar-mini hold-transition skin-@theme@(hideNav ? " no-navigation" : " has-layout-event")@(rtl ? " rtl" : "")">
 
@@ -110,7 +111,9 @@ else
         </section>
 }
         <section class="content">
-            @RenderBody()
+            <div id="update-body">
+                @RenderBody()
+            </div>
         </section>
     </div>
 

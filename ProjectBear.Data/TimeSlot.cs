@@ -20,9 +20,9 @@ namespace ProjectBear.Data
         [Required]
         public Guid RosterId { get; set; }
         [Required]
-        public DateTime StartTime { get; set; }
+        public int Length { get; set; } //In Min
         [Required]
-        public DateTime EndTime { get; set; }
+        public int Offset { get; set; } // In Min
         [Required]
         public string GameName { get; set; }
         [Required]

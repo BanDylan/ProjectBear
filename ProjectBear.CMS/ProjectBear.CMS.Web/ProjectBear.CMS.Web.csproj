@@ -21,7 +21,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
-    <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
     <Use64BitIISExpress />
     <TargetFrameworkProfile />
@@ -504,6 +504,8 @@
     <Content Include="Content\serenity\serenity.css" />
     <Content Include="Content\simple-line-icons.css" />
     <Content Include="Content\site\images\accordion-arrows.png" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="wkhtmltopdf-license.txt" />
     <Content Include="Content\slick-default-theme.css" />
     <Content Include="Content\slick.columnpicker.css" />
@@ -1219,6 +1221,8 @@
     <Content Include="Scripts\ckeditor\CHANGES.md" />
     <Content Include="Modules\Content\RosterManagement\RosterManagementForm.cshtml" />
     <Content Include="Modules\Content\RosterManagement\RosterManagementIndex.cshtml" />
+    <Content Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementForm.cshtml" />
+    <Content Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementIndex.cshtml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -1598,6 +1602,9 @@
     <Compile Include="Modules\Common\Navigation\NavigationModel.cs" />
     <Compile Include="Modules\Common\Reporting\DynamicDataReport.cs" />
     <Compile Include="Modules\Common\Reporting\ExcelReportGenerator.cs" />
+    <Compile Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementEndpoint.cs" />
+    <Compile Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementPage.cs" />
+    <Compile Include="ViewModels\RosterTemplateManagementViewModel.cs" />
     <Compile Include="ViewModels\RosterManagementViewModel.cs" />
     <Content Include="Modules\Common\Reporting\ReportPage.cshtml" />
     <Compile Include="Modules\Common\Reporting\ReportTree.cs" />

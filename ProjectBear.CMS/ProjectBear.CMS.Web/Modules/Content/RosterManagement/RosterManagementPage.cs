@@ -94,10 +94,10 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                 db.Entry(template).State = EntityState.Deleted;
                 db.SaveChanges();
             }
-            return RedirectToAction("Index", "SubscriptionManagement");
+            return RedirectToAction("Index", "RosterManagement");
         }
 
-        [HttpGet, PageAuthorize("Administration"), Route("Delete")]
+        [HttpGet, PageAuthorize("Administration"), Route("Publish")]
         public ActionResult Publish(Guid id)
         {
             Roster roster = db.Roster.SingleOrDefault(m => m.RosterId == id);

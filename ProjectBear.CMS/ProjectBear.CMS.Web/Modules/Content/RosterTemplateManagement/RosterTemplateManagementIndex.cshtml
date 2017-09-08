@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ProjectBear.CMS.ViewModels.RosterTemplateManagementViewModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Globalization;
+
+<h4>Roster Templates</h4>
+<hr />
+@Html.ActionLink("Add", "Add", "RosterTemplateManagement", null, new { @class = "btn btn-primary" })
+<br />
+<div class="row">
+    <div class="col-md-8 col-sm-12">
+        <table class="table table bordered">
+            <tr>
+                <th>Template Name</th>
+                <th>Time Slots</th>
+                <th colspan="2"></th>
+            </tr>
+            @foreach (var template in Model)
+            {
+                <tr>
+                    <td>@template.TemplateName</td>
+                    <td>@template.TimeSlotCount)</td>                    
+                    <td>@Html.ActionLink("Edit", "Edit", "RosterTemplateManagement", new { id = template.RosterTemplateId }, null)</td>
+                    <td>@Html.ActionLink("Delete", "Delete", "RosterTemplateManagement", new { id = template.RosterTemplateId }, null)</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<div id="deleteConfirmation" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden=true>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <button type="button" class="close modalClose" data-dismiss="modal"><img src="~/html/img/modal-close.svg" alt="" /></button>
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
+                    <h2 class="text-center ">Delete Template?</h2>
+                    <div class="row">
+                        <div class="col-xs-12 marginbottom30">
+                            <p class="text-center">Are you sure you wish to delete this template?</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 text-center">
+                            <button id="buttonNo" type="button" data-dismiss="modal" class="btn btn-default margintopMobile20 width144 float-left text-left">No</button>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <button id="buttonYes" type="button" data-dismiss="modal" class="btn  btn-primary margintopMobile20 float-right  width144">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
