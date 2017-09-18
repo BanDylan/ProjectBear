@@ -24,5 +24,8 @@ namespace ProjectBear.Data
         public virtual DbSet<ReserveInTimeSlot> ReservesInTimeSlot { get; set; }
 
         public virtual DbSet<RosterTemplate> RosterTemplate { get; set; }
+
+        public virtual DbSet<TimeSlotTemplate> TimeSlotTemplate { get; set; }
+
     }
 }

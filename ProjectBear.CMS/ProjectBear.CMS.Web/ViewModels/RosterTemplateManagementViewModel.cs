@@ -10,8 +10,8 @@ namespace ProjectBear.CMS.ViewModels
     {
         public RosterTemplateManagementViewModel()
         {
-            TimeSlots = new List<TimeSlot>();
-            TimeSlots.Add(new TimeSlot()
+            TimeSlots = new List<TimeSlotTemplate>();
+            TimeSlots.Add(new TimeSlotTemplate()
             {
                 NumberOfPlayers = 1,
                 NumberOfReserves = 1,
@@ -23,7 +23,7 @@ namespace ProjectBear.CMS.ViewModels
         public Guid RosterTemplateId { get; set; }
 
         public string TemplateName { get; set; }
-        public List<TimeSlot> TimeSlots { get; set; }
+        public List<TimeSlotTemplate> TimeSlots { get; set; }
 
         public int TimeSlotCount => TimeSlots != null ? TimeSlots.Count : 0;
     }

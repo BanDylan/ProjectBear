@@ -24,7 +24,7 @@
                     <div class="row">
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
-                                @Html.TextBoxFor(m => m.TimeSlots[i].GameName, new { id = string.Format("GameName{0}", i), type = "text", onchange = string.Format("SetTimeSlotGameName({0})", i) })
+                                @Html.TextBoxFor(m => m.TimeSlots[i].GameName, new { id = string.Format("GameName{0}", i), type = "text", onblur = string.Format("SetTimeSlotGameName({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
                                 <label>Game</label>
                                 @Html.ValidationMessageFor(m => m.TimeSlots[i].GameName, "", new { @class = "text-danger" })
@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
-                                @Html.TextBoxFor(m => m.TimeSlots[i].Length, new { id = string.Format("Length{0}", i), type = "number", min = "15", onchange = string.Format("SetTimeSlotLength({0})", i) })
+                                @Html.TextBoxFor(m => m.TimeSlots[i].Length, new { id = string.Format("Length{0}", i), type = "number", min = "15", onblur = string.Format("SetTimeSlotLength({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
                                 <label>Slot Length</label>
                                 @Html.ValidationMessageFor(m => m.TimeSlots[i].Length, "", new { @class = "text-danger" })
@@ -49,7 +49,7 @@
                     <div class="row">
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
-                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfPlayers, new { id = string.Format("NumberOfPlayers{0}", i), type = "number", min = "1", onchange = string.Format("SetTimeSlotNumberOfPlayers({0})", i) })
+                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfPlayers, new { id = string.Format("NumberOfPlayers{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfPlayers({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
                                 <label>Number of Player Slots</label>
                                 @Html.ValidationMessageFor(m => m.TimeSlots[i].NumberOfPlayers, "", new { @class = "text-danger" })
@@ -57,7 +57,7 @@
                         </div>
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
-                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfReserves, new { id = string.Format("NumberOfReserves{0}", i), type = "number", min = "1", onchange = string.Format("SetTimeSlotumberOfReserves({0})", i) })
+                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfReserves, new { id = string.Format("NumberOfReserves{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotumberOfReserves({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
                                 <label>Number of Reserve Slots</label>
                                 @Html.ValidationMessageFor(m => m.TimeSlots[i].NumberOfReserves, "", new { @class = "text-danger" })
@@ -76,7 +76,7 @@
                 @Html.ActionLink("Go Back", "Index", "RosterTemplateManagement", null, new { @class = "btn btn-primary" })
             </div>
             <div class="col-lg-6 col-sm-12">
-                <input type="submit" value="Save" class="btn btn-primary width130" />
+                <input type="button" onclick="SaveTemplate()" value="Save" class="btn btn-primary width130" />
             </div>
         </div>
     }
@@ -85,7 +85,7 @@
 <script type="text/javascript">
 
     function SetTemplateName() {
-        var value = form.find('#TemplateName')[0].value;
+        var value = $('#RosterTemplate').find('#TemplateName')[0].value;
         $.ajax({
             url: '@Url.Action("SetTemplateName", "RosterTemplateManagement")',
             type: 'POST',
@@ -121,7 +121,7 @@
     }
 
     function SetTimeSlotGameName(i) {
-        var value = form.find('#GameName' + i)[0].value;
+        var value = $('#RosterTemplate').find('#GameName' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotGameName", "RosterTemplateManagement")',
             type: 'POST',
@@ -133,7 +133,7 @@
     }
 
     function SetTimeSlotLength(i) {
-        var value = form.find('#Length' + i)[0].value;
+        var value = $('#RosterTemplate').find('#Length' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotLength", "RosterTemplateManagement")',
             type: 'POST',
@@ -145,7 +145,7 @@
     }
 
     function SetTimeSlotOffset(i) {
-        var value = form.find('#Offset' + i)[0].value;
+        var value = $('#RosterTemplate').find('#Offset' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotOffset", "RosterTemplateManagement")',
             type: 'POST',
@@ -157,7 +157,7 @@
     }
 
     function SetTimeSlotNumberOfPlayers(i) {
-        var value = form.find('#NumberOfPlayers' + i)[0].value;
+        var value = $('#RosterTemplate').find('#NumberOfPlayers' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotNumberOfPlayers", "RosterTemplateManagement")',
             type: 'POST',
@@ -169,13 +169,22 @@
     }
 
     function SetTimeSlotNumberOfReserves(i) {
-        var value = form.find('#NumberOfReserves' + i)[0].value;
+        var value = $('#RosterTemplate').find('#NumberOfReserves' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotNumberOfReserves", "RosterTemplateManagement")',
             type: 'POST',
             data: {
                 value: value,
                 index: i,
+            },
+        });
+    }
+
+    function SaveTemplate() {
+        $.ajax({
+            url: '@Url.Action("SaveTemplate", "RosterTemplateManagement")',
+            type: 'POST',
+            data: {
             },
         });
     }

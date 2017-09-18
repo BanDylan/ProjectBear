@@ -1,19 +1,191 @@
 ﻿@model ProjectBear.CMS.ViewModels.RosterManagementViewModel
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
 
 <div>
-    @Html.ActionLink("Go Back", "Index", "RosterManagement", null, new { @class = "btn btn-primary" })
-    @using (Html.BeginForm("Save", "RosterManagement", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Ajax.BeginForm("Roster", "RosterManagement", null, new AjaxOptions { }, new { id = "Roster" }))
     {
+        //@Html.AntiForgeryToken()
         <div class="form-horizontal">
-            <h4 class="margintop40">Roster Management</h4>
+            <h4 class="margintop40">Roster Templates</h4>
             <hr />
         </div>
+
+        <div class="group">
+            @Html.TextBoxFor(m => m.Date, new { id = "Date", type = "text", onblur = "SetDate()" })
+            <span class="highlight"></span> <span class="bar"></span>
+            <label>Start date</label>
+            @Html.ValidationMessageFor(m => m.Date, "", new { @class = "text-danger" })
+        </div>
+
+
+        <div class="group">
+            @for (int i = 0; i < Model.TimeSlots.Count; i++)
+            {
+                <div id="@string.Format("TimeSlot{0}", i)" class="workExperSection margintop30">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="group">
+                                @Html.TextBoxFor(m => m.TimeSlots[i].GameName, new { id = string.Format("GameName{0}", i), type = "text", onblur = string.Format("SetTimeSlotGameName({0})", i) })
+                                <span class="highlight"></span> <span class="bar"></span>
+                                <label>Game</label>
+                                @Html.ValidationMessageFor(m => m.TimeSlots[i].GameName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="group">
+                                @Html.TextBoxFor(m => m.TimeSlots[i].Length, new { id = string.Format("Length{0}", i), type = "number", min = "15", onblur = string.Format("SetTimeSlotLength({0})", i) })
+                                <span class="highlight"></span> <span class="bar"></span>
+                                <label>Slot Length</label>
+                                @Html.ValidationMessageFor(m => m.TimeSlots[i].Length, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        @if (i > 0)
+                        {
+                            <div class="col-lg-2 col-sm-12">
+                                <button type="button" class="modalClose smallclose" onclick="DeleteTimeSlot(@i)">@*<img src="~/html/img/modal-close-white.svg" alt="" />*@</button>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="group">
+                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfPlayers, new { id = string.Format("NumberOfPlayers{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfPlayers({0})", i) })
+                                <span class="highlight"></span> <span class="bar"></span>
+                                <label>Number of Player Slots</label>
+                                @Html.ValidationMessageFor(m => m.TimeSlots[i].NumberOfPlayers, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12">
+                            <div class="group">
+                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfReserves, new { id = string.Format("NumberOfReserves{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotumberOfReserves({0})", i) })
+                                <span class="highlight"></span> <span class="bar"></span>
+                                <label>Number of Reserve Slots</label>
+                                @Html.ValidationMessageFor(m => m.TimeSlots[i].NumberOfReserves, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
         <div class="topmargin40">
-            <input type="submit" value="Save" class="btn btn-primary width130" />
+            <button type="button" onclick="AddTimeSlot()" class="btn btn-primary margintopMobile20 text-left relative">Add Time Slot</button>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+                @Html.ActionLink("Go Back", "Index", "RosterTemplateManagement", null, new { @class = "btn btn-primary" })
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                <input type="button" onclick="SaveTemplate()" value="Save" class="btn btn-primary width130" />
+            </div>
         </div>
     }
 </div>
+
+<script type="text/javascript">
+
+    function SetDate() {
+        var value = $('#Roster').find('#Date')[0].value;
+        $.ajax({
+            url: '@Url.Action("SetDate", "RosterManagement")',
+            type: 'POST',
+            data: {
+                value: value,
+            },
+        });
+    }
+
+    function AddTimeSlot() {
+        $.ajax({
+            url: '@Url.Action("AddTimeSlot", "RosterManagement")',
+            type: 'POST',
+            data: {
+            },
+            success: function (result) {
+                $('#update-body').html(result);
+            }
+        });
+    }
+
+    function DeleteTimeSlot(index) {
+        $.ajax({
+            url: '@Url.Action("DeleteTimeSlot", "RosterManagement")',
+            type: 'POST',
+            data: {
+                index: index,
+            },
+            success: function (result) {
+                $('#update-body').html(result);
+            }
+        });
+    }
+
+    function SetTimeSlotGameName(i) {
+        var value = $('#Roster').find('#GameName' + i)[0].value;
+        $.ajax({
+            url: '@Url.Action("SetTimeSlotGameName", "RosterManagement")',
+            type: 'POST',
+            data: {
+                value: value,
+                index: i,
+            },
+        });
+    }
+
+    function SetTimeSlotLength(i) {
+        var value = $('#Roster').find('#Length' + i)[0].value;
+        $.ajax({
+            url: '@Url.Action("SetTimeSlotLength", "RosterManagement")',
+            type: 'POST',
+            data: {
+                value: value,
+                index: i,
+            },
+        });
+    }
+
+    function SetTimeSlotOffset(i) {
+        var value = $('#Roster').find('#Offset' + i)[0].value;
+        $.ajax({
+            url: '@Url.Action("SetTimeSlotOffset", "RosterManagement")',
+            type: 'POST',
+            data: {
+                value: value,
+                index: i,
+            },
+        });
+    }
+
+    function SetTimeSlotNumberOfPlayers(i) {
+        var value = $('#Roster').find('#NumberOfPlayers' + i)[0].value;
+        $.ajax({
+            url: '@Url.Action("SetTimeSlotNumberOfPlayers", "RosterManagement")',
+            type: 'POST',
+            data: {
+                value: value,
+                index: i,
+            },
+        });
+    }
+
+    function SetTimeSlotNumberOfReserves(i) {
+        var value = $('#Roster').find('#NumberOfReserves' + i)[0].value;
+        $.ajax({
+            url: '@Url.Action("SetTimeSlotNumberOfReserves", "RosterManagement")',
+            type: 'POST',
+            data: {
+                value: value,
+                index: i,
+            },
+        });
+    }
+
+    function Save() {
+        $.ajax({
+            url: '@Url.Action("Save", "RosterManagement")',
+            type: 'POST',
+            data: {
+            },
+        });
+    }
+</script>

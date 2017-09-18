@@ -12,7 +12,7 @@ namespace ProjectBear.Data
     {
         public RosterTemplate()
         {
-            TimeSlots = new HashSet<TimeSlot>();
+            TimeSlots = new HashSet<TimeSlotTemplate>();
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -21,6 +21,6 @@ namespace ProjectBear.Data
         [Required]
         public string RosterName { get; set; }
 
-        public virtual ICollection<TimeSlot> TimeSlots { get; set; }
+        public virtual ICollection<TimeSlotTemplate> TimeSlots { get; set; }
     }
 }

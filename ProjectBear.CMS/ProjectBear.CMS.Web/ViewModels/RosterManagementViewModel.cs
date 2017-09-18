@@ -1,7 +1,6 @@
-﻿using System;
+﻿using ProjectBear.Data;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace ProjectBear.CMS.ViewModels
 {
@@ -12,5 +11,7 @@ namespace ProjectBear.CMS.ViewModels
         public DateTime Date { get; set; }
 
         public bool IsPublished { get; set; }
+
+        public List<TimeSlot> TimeSlots { get; set; }
     }
 }

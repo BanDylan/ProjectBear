@@ -32,14 +32,16 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         [HttpGet, PageAuthorize("Administration"), Route("Index")]
         public ActionResult Index()
         {
-            var rosters = db.Roster.ToList();
+            var templates = db.RosterTemplate.ToList();
             var viewList = new List<RosterTemplateManagementViewModel>();
 
-            foreach (var item in rosters)
+            foreach (var template in templates)
             {
                 var iView = new RosterTemplateManagementViewModel
                 {
-
+                    RosterTemplateId = template.RosterTemplateId,
+                    TemplateName = template.RosterName,
+                    TimeSlots = template.TimeSlots.ToList(),
                 };
                 viewList.Add(iView);
             }
@@ -56,12 +58,14 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         [HttpGet, PageAuthorize("Administration"), Route("Edit")]
         public ActionResult Edit(Guid? id)
         {
-            Roster roster = db.Roster.SingleOrDefault(m => m.RosterId == id);
-            if (roster != null)
+            RosterTemplate template = db.RosterTemplate.SingleOrDefault(m => m.RosterTemplateId == id);
+            if (template != null)
             {
                 RosterTemplateManagementViewModel model = new RosterTemplateManagementViewModel
                 {
-
+                    RosterTemplateId = template.RosterTemplateId,
+                    TemplateName = template.RosterName,
+                    TimeSlots = template.TimeSlots.ToList(),
                 };
                 SetSession(model);
                 return View("~/Modules/Content/RosterTemplateManagement/RosterTemplateManagementForm.cshtml", model);
@@ -74,9 +78,9 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         {
             if (id != null)
             {
-                Roster template = new Roster
+                RosterTemplate template = new RosterTemplate
                 {
-                    RosterId = id
+                    RosterTemplateId = id
                 };
                 db.Entry(template).State = EntityState.Deleted;
                 db.SaveChanges();
@@ -96,10 +100,10 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         }
 
         [HttpPost]
-        public bool SetTemplateName(string name)
+        public bool SetTemplateName(string value)
         {
             var template = GetSession();
-            template.TemplateName = name;
+            template.TemplateName = value;
             SetSession(template);
             return true;
         }
@@ -108,7 +112,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         public ActionResult AddTimeSlot()
         {
             var template = GetSession();
-            template.TimeSlots.Add(new TimeSlot()
+            template.TimeSlots.Add(new TimeSlotTemplate()
             {
                 NumberOfPlayers = 1,
                 NumberOfReserves = 1,
@@ -188,6 +192,41 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
             var template = GetSession();
             template.TimeSlots[index].NumberOfReserves = value;
             SetSession(template);
+            return true;
+        }
+
+        [HttpPost]
+        public bool SaveTemplate()
+        {
+            var template = GetSession();
+
+            if(template.RosterTemplateId == Guid.Empty)
+            {
+                var model = new RosterTemplate
+                {
+                    RosterName = template.TemplateName,
+                };
+                db.RosterTemplate.Add(model);
+                db.SaveChanges();
+                foreach(var timeSlot in template.TimeSlots)
+                {
+                    timeSlot.RosterTemplateId = model.RosterTemplateId;
+                    db.TimeSlotTemplate.Add(timeSlot);
+                }
+                db.SaveChanges();
+            } 
+            else
+            {
+                var model = new RosterTemplate
+                {
+                    RosterTemplateId = template.RosterTemplateId,
+                    RosterName = template.TemplateName,
+                    TimeSlots = template.TimeSlots,
+                };
+                db.Entry(model).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+
             return true;
         }
 

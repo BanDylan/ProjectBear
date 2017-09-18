@@ -1582,8 +1582,6 @@
       <DependentUpon>ClientTypes.tt</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DefaultDB\DefaultDB_20160515_072600_UserPreferences.cs" />
-    <Compile Include="Migrations\DefaultDB\DefaultDB_20161126_200000_Organization.cs" />
-    <Compile Include="Migrations\DefaultDB\DefaultDB_20161126_210000_Meeting.cs" />
     <Compile Include="Migrations\DefaultDB\DefaultDB_20161029_130000_ExceptionLog.cs" />
     <Compile Include="Migrations\MigrationUtils.cs" />
     <Compile Include="Migrations\DefaultDB\DefaultDB_20141111_113000_Permissions.cs" />
@@ -1604,6 +1602,7 @@
     <Compile Include="Modules\Common\Reporting\ExcelReportGenerator.cs" />
     <Compile Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementEndpoint.cs" />
     <Compile Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementPage.cs" />
+    <Compile Include="ViewModels\RosterManagementIndexViewModel.cs" />
     <Compile Include="ViewModels\RosterTemplateManagementViewModel.cs" />
     <Compile Include="ViewModels\RosterManagementViewModel.cs" />
     <Content Include="Modules\Common\Reporting\ReportPage.cshtml" />
