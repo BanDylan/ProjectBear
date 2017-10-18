@@ -4,49 +4,75 @@
 }
 @using System.Globalization;
 
-<h4>Roster Management</h4>
-<hr />
-@Html.ActionLink("Add", "Add", "RosterManagement", null, new { @class = "btn btn-primary" })
-<br />
-<div class="row">
-    <div class="col-md-8 col-sm-12">
-        <label class="selectLabel">Template</label>
-        <select id="SelectedFontCombination" class="browser-default">
-            @foreach (var template in Model.TemplateList)
-            {
-                if (template.RosterTemplateId == Model.SelectedTemplate.RosterTemplateId)
-                {
-                    <option class="dropOption" selected="selected" value="@template.RosterTemplateId" data-val-id="@template.RosterTemplateId">@template.TemplateName</option>
-                }
-                else
-                {
-                    <option value="@template.RosterTemplateId" data-val-id="@template.RosterTemplateId">@template.TemplateName</option>
-                }
-            }
 
-        </select>
+@using (Ajax.BeginForm("AddRoster", "RosterManagement", null, new AjaxOptions { }, new { id = "RosterForm" }))
+{
+    <h4>Roster Management</h4>
+    <hr />
+    @Html.ActionLink("Add", "AddRoster", "RosterManagement", null, new { @class = "btn btn-primary" })
+    <br />
+    <div class="row">
+        <div class="col-md-8 col-sm-12">
+            <label class="selectLabel">Template</label>
+            <select id="SelectedTemplate" class="browser-default">
+                @foreach (var template in Model.TemplateList)
+                {
+                    if (template.RosterTemplateId == Model.SelectedTemplate.RosterTemplateId)
+                    {
+                        <option class="dropOption" selected="selected" value="@template.RosterTemplateId" data-val-id="@template.RosterTemplateId">@template.TemplateName</option>
+                    }
+                    else
+                    {
+                        <option value="@template.RosterTemplateId" data-val-id="@template.RosterTemplateId">@template.TemplateName</option>
+                    }
+                }
+
+            </select>
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-8 col-sm-12">
-        <table class="table table bordered">
-            <tr>
-                <th>Date</th>
-                <th>Published</th>
-                <th colspan="2"></th>
-            </tr>
-            @foreach (var roster in Model.RosterList)
-            {
+    <div class="row">
+        <div class="col-md-8 col-sm-12">
+            <table class="table table bordered">
                 <tr>
-                    <td>@string.Format(roster.Date.ToString(), "dd MMM yyyy")</td>
-                    <td>@roster.IsPublished  ? "Published" : "Hidden")</td>
-
-
-                    <td>@Html.ActionLink("Edit", "Edit", "RosterManagement", new { id = roster.RosterId }, null)</td>
-                    <td>@Html.ActionLink("Publish", "Publish", "RosterManagement", (object)new { id = roster.RosterId }, roster.IsPublished ? new { disabled = "disabled" } : null)</td>
-                    <td>@Html.ActionLink("Delete", "Delete", "RosterManagement", new { id = roster.RosterId }, null)</td>
+                    <th>Date</th>
+                    <th>Published</th>
+                    <th colspan="2"></th>
                 </tr>
-            }
-        </table>
+                @foreach (var roster in Model.RosterList)
+                {
+                    <tr>
+                        <td>@string.Format(roster.Date.ToString(), "dd MMM yyyy")</td>
+                        <td>@roster.IsPublished  ? "Published" : "Hidden")</td>
+
+
+                        <td>@Html.ActionLink("Edit", "Edit", "RosterManagement", new { id = roster.RosterId }, null)</td>
+                        <td>@Html.ActionLink("Publish", "Publish", "RosterManagement", (object)new { id = roster.RosterId }, roster.IsPublished ? new { disabled = "disabled" } : null)</td>
+                        <td>@Html.ActionLink("Delete", "Delete", "RosterManagement", new { id = roster.RosterId }, null)</td>
+                    </tr>
+                }
+            </table>
+        </div>
     </div>
-</div>
+}
+<script type="text/javascript">
+
+    function UpdateTemplate() {
+        var selectedTemplate = $("#RosterForm").find("#SelectedTemplate option:selected");
+        var templateId = selectedTemplate.attr("data-val-id")
+        $.ajax({
+            url: '@Url.Action("SaveSelectedFontPair", "RosterManagement")',
+            type: 'POST',
+            data: {
+                selectedTemplateId: templateId
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        UpdateTemplate();
+
+        $("#RosterForm").find("#SelectedTemplate").bind("change", function () {
+            UpdateTemplate();
+        });
+    })
+</script>

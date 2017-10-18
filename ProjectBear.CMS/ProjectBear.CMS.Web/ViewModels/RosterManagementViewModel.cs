@@ -6,6 +6,10 @@ namespace ProjectBear.CMS.ViewModels
 {
     public class RosterManagementViewModel
     {
+        public RosterManagementViewModel()
+        {
+            TimeSlots = new List<TimeSlot>();
+        }
         public Guid RosterId { get; set; }
 
         public DateTime Date { get; set; }

@@ -104,6 +104,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         {
             var template = GetSession();
             template.TemplateName = value;
+            template.Edited = true;
             SetSession(template);
             return true;
         }
@@ -119,6 +120,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
                 Length = 60,
             });
             template = UpdateOffsets(template);
+            template.Edited = true;
             SetSession(template);
             return PartialView("~/Modules/Content/RosterTemplateManagement/RosterTemplateManagementForm.cshtml", template);
         }
@@ -132,6 +134,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
                 template.TimeSlots.RemoveAt(index);
             }
             template = UpdateOffsets(template);
+            template.Edited = true;
             SetSession(template);
             return PartialView("~/Modules/Content/RosterTemplateManagement/RosterTemplateManagementForm.cshtml", template);
         }
@@ -154,6 +157,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         {
             var template = GetSession();
             template.TimeSlots[index].GameName = value;
+            template.Edited = true;
             SetSession(template);
             return true;
         }
@@ -164,6 +168,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
             var template = GetSession();
             template.TimeSlots[index].Length = value;
             template = UpdateOffsets(template);
+            template.Edited = true;
             SetSession(template);
             return true;
         }
@@ -173,6 +178,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         {
             var template = GetSession();
             template.TimeSlots[index].Offset = value;
+            template.Edited = true;
             SetSession(template);
             return true;
         }
@@ -182,6 +188,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         {
             var template = GetSession();
             template.TimeSlots[index].NumberOfPlayers = value;
+            template.Edited = true;
             SetSession(template);
             return true;
         }
@@ -191,6 +198,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         {
             var template = GetSession();
             template.TimeSlots[index].NumberOfReserves = value;
+            template.Edited = true;
             SetSession(template);
             return true;
         }
@@ -208,7 +216,8 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
                 };
                 db.RosterTemplate.Add(model);
                 db.SaveChanges();
-                foreach(var timeSlot in template.TimeSlots)
+                template.RosterTemplateId = model.RosterTemplateId;
+                foreach (var timeSlot in template.TimeSlots)
                 {
                     timeSlot.RosterTemplateId = model.RosterTemplateId;
                     db.TimeSlotTemplate.Add(timeSlot);
@@ -221,12 +230,32 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
                 {
                     RosterTemplateId = template.RosterTemplateId,
                     RosterName = template.TemplateName,
-                    TimeSlots = template.TimeSlots,
                 };
                 db.Entry(model).State = EntityState.Modified;
                 db.SaveChanges();
-            }
+                foreach(var oldTimeSlot in db.TimeSlotTemplate.Where(x => x.RosterTemplateId == template.RosterTemplateId))
+                {
+                    db.Entry(oldTimeSlot).State = EntityState.Deleted;
+                }
 
+                foreach (var newTimeSlot in template.TimeSlots)
+                {
+                    var timeSlotModel = new TimeSlotTemplate
+                    {
+                        RosterTemplateId = template.RosterTemplateId,
+                        GameName = newTimeSlot.GameName,
+                        Length = newTimeSlot.Length,
+                        Offset = newTimeSlot.Offset,
+                        NumberOfPlayers = newTimeSlot.NumberOfPlayers,
+                        NumberOfReserves = newTimeSlot.NumberOfReserves,
+                    };
+                    db.TimeSlotTemplate.Add(timeSlotModel);
+                }
+                db.SaveChanges();
+            }
+            template.Edited = false;
+
+            SetSession(template);
             return true;
         }
 

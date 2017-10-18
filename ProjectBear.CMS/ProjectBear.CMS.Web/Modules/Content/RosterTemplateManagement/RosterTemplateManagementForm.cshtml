@@ -10,6 +10,8 @@
         </div>
 
         <div class="group">
+            @Html.Hidden("Edited", Model.Edited)
+
             @Html.TextBoxFor(m => m.TemplateName, new { id = "TemplateName", type = "text", onblur = "SetTemplateName()" })
             <span class="highlight"></span> <span class="bar"></span>
             <label>Template Name</label>
@@ -57,7 +59,7 @@
                         </div>
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
-                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfReserves, new { id = string.Format("NumberOfReserves{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotumberOfReserves({0})", i) })
+                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfReserves, new { id = string.Format("NumberOfReserves{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfReserves({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
                                 <label>Number of Reserve Slots</label>
                                 @Html.ValidationMessageFor(m => m.TimeSlots[i].NumberOfReserves, "", new { @class = "text-danger" })
@@ -73,14 +75,44 @@
         </div>
         <div class="row">
             <div class="col-lg-6 col-sm-12">
-                @Html.ActionLink("Go Back", "Index", "RosterTemplateManagement", null, new { @class = "btn btn-primary" })
+                <input type="button" onclick="GoBack()" value="Go Back" class="btn btn-primary width130" />
             </div>
             <div class="col-lg-6 col-sm-12">
                 <input type="button" onclick="SaveTemplate()" value="Save" class="btn btn-primary width130" />
             </div>
         </div>
     }
+    <div id="saveCheckModal" class="modal fade bd-example-modal-lg " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden=true>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <button type="button" class="close modalClose" data-dismiss="modal"><img src="~/html/img/modal-close.svg" alt="" /></button>
+                <div class="clearfix"></div>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2 ">
+                        <h2 class="text-center margintop0 marginbottom30">You haven't saved?</h2>
+                        <div class="row">
+                            <div class="col-xs-12 marginbottom30">
+                                <p class="text-center">Would you like to save changes before leaving?</p>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 text-center">
+                                <button id="buttonNo" type="button" data-dismiss="modal" class="btn btn-default margintopMobile20 width144">No</button>
+                            </div>
+                            <div class="col-xs-6 text-center">
+                                <button id="buttonYes" type="button" data-dismiss="modal" class="btn  btn-primary margintopMobile20 width144">Yes</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 <script type="text/javascript">
 
@@ -93,6 +125,7 @@
                 value: value,
             },
         });
+        document.getElementById('Edited').value = true;
     }
 
     function AddTimeSlot() {
@@ -130,6 +163,7 @@
                 index: i,
             },
         });
+        document.getElementById('Edited').value = true;
     }
 
     function SetTimeSlotLength(i) {
@@ -142,6 +176,7 @@
                 index: i,
             },
         });
+        document.getElementById('Edited').value = true;
     }
 
     function SetTimeSlotOffset(i) {
@@ -154,30 +189,33 @@
                 index: i,
             },
         });
+        document.getElementById('Edited').value = true;
     }
 
     function SetTimeSlotNumberOfPlayers(i) {
         var value = $('#RosterTemplate').find('#NumberOfPlayers' + i)[0].value;
         $.ajax({
-            url: '@Url.Action("SetTimeSlotNumberOfPlayers", "RosterTemplateManagement")',
+            url: '@Url.Action("SetTimeSlotPlayerCount", "RosterTemplateManagement")',
             type: 'POST',
             data: {
                 value: value,
                 index: i,
             },
         });
+        document.getElementById('Edited').value = true;
     }
 
     function SetTimeSlotNumberOfReserves(i) {
         var value = $('#RosterTemplate').find('#NumberOfReserves' + i)[0].value;
         $.ajax({
-            url: '@Url.Action("SetTimeSlotNumberOfReserves", "RosterTemplateManagement")',
+            url: '@Url.Action("SetTimeSlotReserveCount", "RosterTemplateManagement")',
             type: 'POST',
             data: {
                 value: value,
                 index: i,
             },
         });
+        document.getElementById('Edited').value = true;
     }
 
     function SaveTemplate() {
@@ -187,5 +225,27 @@
             data: {
             },
         });
+    }
+
+    function GoBack() {
+        if (document.getElementById('Edited').value.toUpperCase() == "TRUE") {
+            $('#saveCheckModal').modal('show');
+            $('#buttonYes').click(function () {
+                $.ajax({
+                    url: '@Url.Action("SaveTemplate", "RosterTemplateManagement")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                    },
+                });
+                window.location.href = '@Url.Action("Index", "RosterTemplateManagement")';
+            });
+            $('#buttonNo').click(function () {
+                window.location.href = '@Url.Action("Index", "RosterTemplateManagement")';
+            });
+        }
+        else {
+            window.location.href = '@Url.Action("Index", "RosterTemplateManagement")';
+        }
     }
 </script>

@@ -14,6 +14,18 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
     public class RosterManagementController : Controller
     {
         ProjectBearDataContext db = new ProjectBearDataContext();
+        public RosterManagementViewModel GetSession()
+        {
+            if (Session["CurrentRoster"] == null)
+                Session["CurrentRoster"] = new RosterManagementViewModel();
+            return (RosterManagementViewModel)Session["CurrentRoster"];
+        }
+
+        public void SetSession(RosterManagementViewModel model)
+        {
+            Session["CurrentRoster"] = model;
+        }
+
 
         [Authorize, HttpGet, Route("~/")]//[HttpGet, PageAuthorize("Administration"), Route("Index")]
         public ActionResult Index()
@@ -58,10 +70,18 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
             return View("~/Modules/Content/RosterManagement/RosterManagementIndex.cshtml", viewModel);
         }
 
-        [HttpPost, PageAuthorize("Administration"), Route("Add")]
-        public ActionResult Add(Guid id)
+        [HttpPost]
+        public bool SaveSelectedFontPair(Guid selectedTemplateId)
         {
-            if (id == Guid.Empty)
+            Session["SelectedTemplate"] = selectedTemplateId;
+            return true;
+        }
+
+        [HttpPost]
+        public ActionResult AddRoster()
+        {
+            var id = (Guid) Session["SelectedTemplateId"];
+            if (id == null || id == Guid.Empty)
                 return View("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", new RosterManagementViewModel());
             else
             {
@@ -132,5 +152,17 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
             }
             return View("~/Modules/Content/RosterManagement/RosterManagementIndex.cshtml");
         }
+
+
+        #region Form
+
+        [HttpGet]
+        public ActionResult Roster()
+        {
+            var template = GetSession();
+            return PartialView("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", template);
+        }
+
+        #endregion Form
     }
 }
