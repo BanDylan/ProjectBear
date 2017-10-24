@@ -71,20 +71,20 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
         }
 
         [HttpPost]
-        public bool SaveSelectedFontPair(Guid selectedTemplateId)
+        public bool SaveSelectedTemplateId(Guid selectedTemplateId)
         {
-            Session["SelectedTemplate"] = selectedTemplateId;
+            Session["SelectedTemplateId"] = selectedTemplateId;
             return true;
         }
 
-        [HttpPost]
-        public ActionResult AddRoster()
+        public ActionResult Add()
         {
-            var id = (Guid) Session["SelectedTemplateId"];
-            if (id == null || id == Guid.Empty)
+
+            if (Session["SelectedTemplateId"] == null || (Guid)Session["SelectedTemplateId"] == Guid.Empty)
                 return View("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", new RosterManagementViewModel());
             else
             {
+                var id = (Guid)Session["SelectedTemplateId"];
                 var template = db.RosterTemplate.SingleOrDefault(m => m.RosterTemplateId == id);
                 var viewModel = new RosterManagementViewModel()
                 {
@@ -130,11 +130,11 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
         {
             if (id != null)
             {
-                Roster template = new Roster
+                Roster roster = new Roster
                 {
                     RosterId = id
                 };
-                db.Entry(template).State = EntityState.Deleted;
+                db.Entry(roster).State = EntityState.Deleted;
                 db.SaveChanges();
             }
             return RedirectToAction("Index", "RosterManagement");
@@ -159,9 +159,172 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
         [HttpGet]
         public ActionResult Roster()
         {
-            var template = GetSession();
-            return PartialView("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", template);
+            var roster = GetSession();
+            return PartialView("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", roster);
         }
+
+
+        [HttpPost]
+        public bool SetStartTime(DateTime value)
+        {
+            var roster = GetSession();
+            roster.Date = value;
+            roster.Edited = true;
+            SetSession(roster);
+            return true;
+        }
+
+        [HttpPost]
+        public ActionResult AddTimeSlot()
+        {
+            var roster = GetSession();
+            roster.TimeSlots.Add(new TimeSlot()
+            {
+                NumberOfPlayers = 1,
+                NumberOfReserves = 1,
+                Length = 60,
+            });
+            roster = UpdateOffsets(roster);
+            roster.Edited = true;
+            SetSession(roster);
+            return PartialView("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", roster);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteTimeSlot(int index)
+        {
+            var roster = GetSession();
+            if (index < roster.TimeSlots.Count)
+            {
+                roster.TimeSlots.RemoveAt(index);
+            }
+            roster = UpdateOffsets(roster);
+            roster.Edited = true;
+            SetSession(roster);
+            return PartialView("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", roster);
+        }
+
+        private RosterManagementViewModel UpdateOffsets(RosterManagementViewModel roster)
+        {
+            int cumulative = 0;
+            foreach (var timeSlot in roster.TimeSlots)
+            {
+                timeSlot.Offset = cumulative;
+                cumulative += timeSlot.Length;
+            }
+            return roster;
+        }
+
+        #region TimeSlotForm
+
+        [HttpPost]
+        public bool SetTimeSlotGameName(string value, int index)
+        {
+            var roster = GetSession();
+            roster.TimeSlots[index].GameName = value;
+            roster.Edited = true;
+            SetSession(roster);
+            return true;
+        }
+
+        [HttpPost]
+        public bool SetTimeSlotLength(int value, int index)
+        {
+            var roster = GetSession();
+            roster.TimeSlots[index].Length = value;
+            roster = UpdateOffsets(roster);
+            roster.Edited = true;
+            SetSession(roster);
+            return true;
+        }
+
+        [HttpPost]
+        public bool SetTimeSlotOffset(int value, int index)
+        {
+            var roster = GetSession();
+            roster.TimeSlots[index].Offset = value;
+            roster.Edited = true;
+            SetSession(roster);
+            return true;
+        }
+
+        [HttpPost]
+        public bool SetTimeSlotPlayerCount(int value, int index)
+        {
+            var roster = GetSession();
+            roster.TimeSlots[index].NumberOfPlayers = value;
+            roster.Edited = true;
+            SetSession(roster);
+            return true;
+        }
+
+        [HttpPost]
+        public bool SetTimeSlotReserveCount(int value, int index)
+        {
+            var roster = GetSession();
+            roster.TimeSlots[index].NumberOfReserves = value;
+            roster.Edited = true;
+            SetSession(roster);
+            return true;
+        }
+
+        [HttpPost]
+        public bool SaveRoster()
+        {
+            var roster = GetSession();
+
+            if (roster.RosterId == Guid.Empty)
+            {
+                var model = new Roster
+                {
+                    Date = roster.Date,
+                };
+                db.Roster.Add(model);
+                db.SaveChanges();
+                roster.RosterId = model.RosterId;
+                foreach (var timeSlot in roster.TimeSlots)
+                {
+                    timeSlot.RosterId = model.RosterId;
+                    db.TimeSlot.Add(timeSlot);
+                }
+                db.SaveChanges();
+            }
+            else
+            {
+                var model = new Roster
+                {
+                    RosterId = roster.RosterId,
+                    Date = roster.Date,
+                };
+                db.Entry(model).State = EntityState.Modified;
+                db.SaveChanges();
+                foreach (var oldTimeSlot in db.TimeSlot.Where(x => x.RosterId == roster.RosterId))
+                {
+                    db.Entry(oldTimeSlot).State = EntityState.Deleted;
+                }
+
+                foreach (var newTimeSlot in roster.TimeSlots)
+                {
+                    var timeSlotModel = new TimeSlot
+                    {
+                        RosterId = roster.RosterId,
+                        GameName = newTimeSlot.GameName,
+                        Length = newTimeSlot.Length,
+                        Offset = newTimeSlot.Offset,
+                        NumberOfPlayers = newTimeSlot.NumberOfPlayers,
+                        NumberOfReserves = newTimeSlot.NumberOfReserves,
+                    };
+                    db.TimeSlot.Add(timeSlotModel);
+                }
+                db.SaveChanges();
+            }
+            roster.Edited = false;
+
+            SetSession(roster);
+            return true;
+        }
+
+        #endregion TimeSlotForm
 
         #endregion Form
     }

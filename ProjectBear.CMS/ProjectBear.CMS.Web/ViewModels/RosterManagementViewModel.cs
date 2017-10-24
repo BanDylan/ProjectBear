@@ -17,5 +17,7 @@ namespace ProjectBear.CMS.ViewModels
         public bool IsPublished { get; set; }
 
         public List<TimeSlot> TimeSlots { get; set; }
+
+        public bool Edited { get; set; }
     }
 }

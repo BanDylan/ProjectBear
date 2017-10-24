@@ -5,11 +5,11 @@
 @using System.Globalization;
 
 
-@using (Ajax.BeginForm("AddRoster", "RosterManagement", null, new AjaxOptions { }, new { id = "RosterForm" }))
+@using (Ajax.BeginForm("Add", "RosterManagement", null, new AjaxOptions { }, new { id = "RosterForm" }))
 {
     <h4>Roster Management</h4>
     <hr />
-    @Html.ActionLink("Add", "AddRoster", "RosterManagement", null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Add", "Add", "RosterManagement", null, new { @class = "btn btn-primary" })
     <br />
     <div class="row">
         <div class="col-md-8 col-sm-12">
@@ -60,7 +60,7 @@
         var selectedTemplate = $("#RosterForm").find("#SelectedTemplate option:selected");
         var templateId = selectedTemplate.attr("data-val-id")
         $.ajax({
-            url: '@Url.Action("SaveSelectedFontPair", "RosterManagement")',
+            url: '@Url.Action("SaveSelectedTemplateId", "RosterManagement")',
             type: 'POST',
             data: {
                 selectedTemplateId: templateId
