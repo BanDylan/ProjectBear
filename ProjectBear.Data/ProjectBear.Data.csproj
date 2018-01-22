@@ -64,6 +64,10 @@
     <Compile Include="Migrations\201709181030067_Setup.Designer.cs">
       <DependentUpon>201709181030067_Setup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801221210496_ProfileStrikesAndBans.cs" />
+    <Compile Include="Migrations\201801221210496_ProfileStrikesAndBans.Designer.cs">
+      <DependentUpon>201801221210496_ProfileStrikesAndBans.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ReserveInTimeSlot.cs" />
     <Compile Include="Profile.cs" />
@@ -82,6 +86,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201709181030067_Setup.resx">
       <DependentUpon>201709181030067_Setup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801221210496_ProfileStrikesAndBans.resx">
+      <DependentUpon>201801221210496_ProfileStrikesAndBans.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

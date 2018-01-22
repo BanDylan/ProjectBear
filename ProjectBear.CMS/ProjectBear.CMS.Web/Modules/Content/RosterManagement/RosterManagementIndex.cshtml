@@ -40,19 +40,32 @@
                 </tr>
                 @foreach (var roster in Model.RosterList)
                 {
-                    <tr>
-                        <td>@string.Format(roster.Date.ToString(), "dd MMM yyyy")</td>
-                        <td>@roster.IsPublished  ? "Published" : "Hidden")</td>
+                <tr>
+                    <td>@string.Format(roster.Date.ToString(), "dd MMM yyyy")</td>
+                    <td>@(roster.IsPublished ? "Published" : "Hidden")</td>
 
 
-                        <td>@Html.ActionLink("Edit", "Edit", "RosterManagement", new { id = roster.RosterId }, null)</td>
-                        <td>@Html.ActionLink("Publish", "Publish", "RosterManagement", (object)new { id = roster.RosterId }, roster.IsPublished ? new { disabled = "disabled" } : null)</td>
-                        <td>@Html.ActionLink("Delete", "Delete", "RosterManagement", new { id = roster.RosterId }, null)</td>
-                    </tr>
+                    <td>@Html.ActionLink("Edit", "Edit", "RosterManagement", new { id = roster.RosterId }, null)</td>
+                    
+                    <td>@if (!roster.IsPublished) { @Html.ActionLink("Publish", "Publish", "RosterManagement", (object)new { id = roster.RosterId }, null) }</td>
+                    
+                    <td>@Html.ActionLink("Delete", "Delete", "RosterManagement", new { id = roster.RosterId }, null)</td>
+                </tr>
                 }
             </table>
         </div>
     </div>
+
+    @functions {
+        object GetHtmlAttributes(bool published)
+        {
+            if (published)
+            {
+                return new { disabled = "disabled" };
+            }
+            return new { };
+        }
+    }
 }
 <script type="text/javascript">
 

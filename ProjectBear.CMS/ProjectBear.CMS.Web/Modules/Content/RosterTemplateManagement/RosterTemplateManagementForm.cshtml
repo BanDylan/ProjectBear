@@ -1,7 +1,6 @@
 ﻿@model ProjectBear.CMS.ViewModels.RosterTemplateManagementViewModel
-
 <div>
-    @using (Ajax.BeginForm("RosterTemplate", "RosterTemplateManagement", null, new AjaxOptions { }, new { id = "RosterTemplate" }))
+    @using (Ajax.BeginForm("RosterTemplate", "RosterTemplateManagement", null, new AjaxOptions { }, new { id = "RosterTemplateForm" }))
     {
         //@Html.AntiForgeryToken()
         <div class="form-horizontal">
@@ -15,7 +14,7 @@
             @Html.TextBoxFor(m => m.TemplateName, new { id = "TemplateName", type = "text", onblur = "SetTemplateName()" })
             <span class="highlight"></span> <span class="bar"></span>
             <label>Template Name</label>
-            @Html.ValidationMessageFor(m => m.TemplateName, "", new { @class = "text-danger" })
+            <span id="TemplateNameValidation" style="display:none" class="field-validation-error text-danger">Enter a name for this template</span>
         </div>
 
 
@@ -30,6 +29,7 @@
                                 <span class="highlight"></span> <span class="bar"></span>
                                 <label>Game</label>
                                 @Html.ValidationMessageFor(m => m.TimeSlots[i].GameName, "", new { @class = "text-danger" })
+                                <span id="@string.Format("GameNameValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a game for this time slot</span>
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-12">
@@ -37,7 +37,7 @@
                                 @Html.TextBoxFor(m => m.TimeSlots[i].Length, new { id = string.Format("Length{0}", i), type = "number", min = "15", onblur = string.Format("SetTimeSlotLength({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
                                 <label>Slot Length</label>
-                                @Html.ValidationMessageFor(m => m.TimeSlots[i].Length, "", new { @class = "text-danger" })
+                                <span id="@string.Format("LengthValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a duration for this time slot between 15 and 480 min</span>
                             </div>
                         </div>
                         @if (i > 0)
@@ -54,7 +54,7 @@
                                 @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfPlayers, new { id = string.Format("NumberOfPlayers{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfPlayers({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
                                 <label>Number of Player Slots</label>
-                                @Html.ValidationMessageFor(m => m.TimeSlots[i].NumberOfPlayers, "", new { @class = "text-danger" })
+                                <span id="@string.Format("NumberOfPlayersValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter the number of player slots for this time slot</span>
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-12">
@@ -62,7 +62,7 @@
                                 @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfReserves, new { id = string.Format("NumberOfReserves{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfReserves({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
                                 <label>Number of Reserve Slots</label>
-                                @Html.ValidationMessageFor(m => m.TimeSlots[i].NumberOfReserves, "", new { @class = "text-danger" })
+                                <span id="@string.Format("NumberOfReservesValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter the number of reserve slots for this time slot</span>
                             </div>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                 <input type="button" onclick="GoBack()" value="Go Back" class="btn btn-primary width130" />
             </div>
             <div class="col-lg-6 col-sm-12">
-                <input type="button" onclick="SaveTemplate()" value="Save" class="btn btn-primary width130" />
+                <input type="button" onclick="ValidateAndSave(@Model.TimeSlotCount)" value="Save" class="btn btn-primary width130" />
             </div>
         </div>
     }
@@ -117,7 +117,7 @@
 <script type="text/javascript">
 
     function SetTemplateName() {
-        var value = $('#RosterTemplate').find('#TemplateName')[0].value;
+        var value = $('#RosterTemplateForm').find('#TemplateName')[0].value;
         $.ajax({
             url: '@Url.Action("SetTemplateName", "RosterTemplateManagement")',
             type: 'POST',
@@ -154,7 +154,7 @@
     }
 
     function SetTimeSlotGameName(i) {
-        var value = $('#RosterTemplate').find('#GameName' + i)[0].value;
+        var value = $('#RosterTemplateForm').find('#GameName' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotGameName", "RosterTemplateManagement")',
             type: 'POST',
@@ -167,7 +167,7 @@
     }
 
     function SetTimeSlotLength(i) {
-        var value = $('#RosterTemplate').find('#Length' + i)[0].value;
+        var value = $('#RosterTemplateForm').find('#Length' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotLength", "RosterTemplateManagement")',
             type: 'POST',
@@ -180,7 +180,7 @@
     }
 
     function SetTimeSlotOffset(i) {
-        var value = $('#RosterTemplate').find('#Offset' + i)[0].value;
+        var value = $('#RosterTemplateForm').find('#Offset' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotOffset", "RosterTemplateManagement")',
             type: 'POST',
@@ -193,7 +193,7 @@
     }
 
     function SetTimeSlotNumberOfPlayers(i) {
-        var value = $('#RosterTemplate').find('#NumberOfPlayers' + i)[0].value;
+        var value = $('#RosterTemplateForm').find('#NumberOfPlayers' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotPlayerCount", "RosterTemplateManagement")',
             type: 'POST',
@@ -206,7 +206,7 @@
     }
 
     function SetTimeSlotNumberOfReserves(i) {
-        var value = $('#RosterTemplate').find('#NumberOfReserves' + i)[0].value;
+        var value = $('#RosterTemplateForm').find('#NumberOfReserves' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotReserveCount", "RosterTemplateManagement")',
             type: 'POST',
@@ -218,13 +218,67 @@
         document.getElementById('Edited').value = true;
     }
 
-    function SaveTemplate() {
-        $.ajax({
-            url: '@Url.Action("SaveTemplate", "RosterTemplateManagement")',
-            type: 'POST',
-            data: {
-            },
-        });
+    function ValidateAndSave(count) {
+        var form = $("#RosterTemplateForm");
+        var isValid = true;
+
+        var templateName = form.find('#TemplateName')[0].value
+        if (/\S/.test(templateName)) {
+            form.find("#TemplateNameValidation").hide();
+        }
+        else {
+            isValid = false;
+            form.find("#TemplateNameValidation").show();
+        }
+
+        for (var i = 0; i < count; i++) {
+
+            var gameName = form.find('#GameName' + i)[0].value
+            if (/\S/.test(gameName)) {
+                form.find("#GameNameValidation" + i).hide();
+            }
+            else {
+                isValid = false;
+                form.find("#GameNameValidation" + i).show();
+            }
+
+
+            var length = form.find('#Length' + i)[0].value
+            if (length > 15 && length <= 400) {
+                form.find("#LengthValidation" + i).hide();
+            }
+            else {
+                isValid = false;
+                form.find("#LengthValidation" + i).show();
+            }
+
+            var numberOfPlayers = form.find('#NumberOfPlayers' + i)[0].value
+            if (numberOfPlayers > 0) {
+                form.find("#NumberOfPlayersValidation" + i).hide();
+            }
+            else {
+                isValid = false;
+                form.find("#NumberOfPlayersValidation" + i).show();
+            }
+
+            var numberOfReserves = form.find('#NumberOfReserves' + i)[0].value
+            if (numberOfReserves >= 0) {
+                form.find("#NumberOfReservesValidation" + i).hide();
+            }
+            else {
+                isValid = false;
+                form.find("#NumberOfReservesValidation" + i).show();
+            }
+        }
+
+        if (isValid) {
+            $.ajax({
+                url: '@Url.Action("SaveTemplate", "RosterTemplateManagement")',
+                type: 'POST',
+                data: {
+                },
+            });
+        }
     }
 
     function GoBack() {

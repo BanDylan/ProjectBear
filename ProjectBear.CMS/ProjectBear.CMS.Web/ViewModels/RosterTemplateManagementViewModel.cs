@@ -28,5 +28,6 @@ namespace ProjectBear.CMS.ViewModels
         public int TimeSlotCount => TimeSlots != null ? TimeSlots.Count : 0;
 
         public bool Edited { get; set; } = false;
+
     }
 }

@@ -79,17 +79,25 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
 
         public ActionResult Add()
         {
+            var viewModel = new RosterManagementViewModel
+            {
+                Date = DateTime.Now,
+                IsPublished = false,
+                TimeSlots = new List<TimeSlot>(),
+            };
 
-            if (Session["SelectedTemplateId"] == null || (Guid)Session["SelectedTemplateId"] == Guid.Empty)
-                return View("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", new RosterManagementViewModel());
-            else
+            if (Session["SelectedTemplateId"] == null || (Guid)Session["SelectedTemplateId"] == Guid.Empty) {
+                viewModel.TimeSlots.Add(new TimeSlot {
+                    NumberOfPlayers = 1,
+                    NumberOfReserves = 1,
+                    Length = 60,
+                });
+            }
+            else 
             {
                 var id = (Guid)Session["SelectedTemplateId"];
                 var template = db.RosterTemplate.SingleOrDefault(m => m.RosterTemplateId == id);
-                var viewModel = new RosterManagementViewModel()
-                {
-                    TimeSlots = new List<TimeSlot>(),
-                };
+                
                 foreach(var timeSlot in template.TimeSlots)
                 {
                     viewModel.TimeSlots.Add(new TimeSlot
@@ -101,9 +109,11 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                         NumberOfReserves = timeSlot.NumberOfReserves,
                     });
                 }
+            }
+             
 
-                return View("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", viewModel);
-            }         
+            SetSession(viewModel);
+            return View("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", viewModel);
         }
 
         [HttpGet, PageAuthorize("Administration"), Route("Edit")]
@@ -150,7 +160,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                 db.Entry(roster).State = EntityState.Modified;
                 db.SaveChanges();
             }
-            return View("~/Modules/Content/RosterManagement/RosterManagementIndex.cshtml");
+            return RedirectToAction("Index", "RosterManagement");
         }
 
 
@@ -278,6 +288,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                 var model = new Roster
                 {
                     Date = roster.Date,
+                    IsPublished = false,
                 };
                 db.Roster.Add(model);
                 db.SaveChanges();
@@ -295,6 +306,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                 {
                     RosterId = roster.RosterId,
                     Date = roster.Date,
+                    IsPublished = false,
                 };
                 db.Entry(model).State = EntityState.Modified;
                 db.SaveChanges();
