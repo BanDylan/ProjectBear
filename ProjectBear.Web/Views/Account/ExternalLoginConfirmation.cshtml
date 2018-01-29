@@ -1,0 +1,47 @@
+﻿@model ProjectBear.Web.Models.ExternalLoginConfirmationViewModel
+@{
+    ViewBag.Title = "Username";
+}
+@using (Ajax.BeginForm("ExternalLoginConfirmation", "Account", null, new AjaxOptions { OnComplete = "onComplete", UpdateTargetId = "update-body" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container bgwhite softshadow">
+        <div class="pad30">
+            <div class="row">
+                <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0">
+                    <h2 class="text-center margintop0 marginbottom60"></h2>
+                    <div class="row marginbottom30">
+                        <div class="col-sm-12 text-center">
+                            <div class="thumb"><img src="~/html/img/email.svg" alt="" /></div>
+                            <div class="marginbottom30">
+                                Choose a username<br><br>
+                            </div>
+                            <form class="margintop30" data-toggle="validator">
+                                <div class="group ">
+                                    @Html.TextBoxFor(m => m.Username)
+                                    <span class="highlight"></span> <span class="bar"></span>
+                                    @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <label>Username</label>
+                                </div>
+                                <div class="signupBtnHolder">
+                                    <button type="submit" class="btn btn-primary ">Confirm</button>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function onComplete() {
+            if ("@ViewData["redirect"]" != null && "@ViewData["redirect"]" != "")
+            {
+                window.location = "@ViewData["redirect"]";
+            }
+        }
+    </script>
+}
+

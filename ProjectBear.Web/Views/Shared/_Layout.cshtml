@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using ProjectBear.Web.Models
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -26,10 +28,28 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    @if (!Request.IsAuthenticated)
+                    {
+                        <li>
+                            @{
+                                using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = new ExternalLoginViewModels() }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <div class="col-md-4 col-md-offset-1 col-sm-12 col-sm-offset-0 margintop30 ">
+                                        <div class="socialHolder">
+                                            <button type="submit" class="socialLink" id="Steam" name="provider" value="Steam"><span class="socialIcons">@*<img width="40" height="40" src="~/html/img/facebook-icon.svg" alt="" />*@</span>&nbsp; &nbsp;Sign in with Steam</button>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
     </div>
+
+
     <div class="container body-content">
         @RenderBody()
         <hr />
