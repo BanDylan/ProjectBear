@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using ProjectBear.Data;
 using ProjectBear.CMS.ViewModels;
+using System.Globalization;
 
 namespace ProjectBear.CMS.Modules.Content.RosterManagement
 {
@@ -81,15 +82,15 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
         {
             var viewModel = new RosterManagementViewModel
             {
-                Date = DateTime.Now,
+                Date = DateTime.Now.Date.AddHours(16),
                 IsPublished = false,
                 TimeSlots = new List<TimeSlot>(),
             };
 
             if (Session["SelectedTemplateId"] == null || (Guid)Session["SelectedTemplateId"] == Guid.Empty) {
                 viewModel.TimeSlots.Add(new TimeSlot {
-                    NumberOfPlayers = 1,
-                    NumberOfReserves = 1,
+                    NumberOfPlayers = 0,
+                    NumberOfReserves = 0,
                     Length = 60,
                 });
             }
@@ -175,13 +176,21 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
 
 
         [HttpPost]
-        public bool SetStartTime(DateTime value)
+        public bool SetStartTime(string value)
         {
             var roster = GetSession();
-            roster.Date = value;
-            roster.Edited = true;
-            SetSession(roster);
-            return true;
+            try
+            {
+                roster.Date = DateTime.ParseExact(value, "dd/MM/yyyy hh:mm", CultureInfo.InvariantCulture);
+                roster.Edited = true;
+                SetSession(roster);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            
         }
 
         [HttpPost]
@@ -190,8 +199,8 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
             var roster = GetSession();
             roster.TimeSlots.Add(new TimeSlot()
             {
-                NumberOfPlayers = 1,
-                NumberOfReserves = 1,
+                NumberOfPlayers = 0,
+                NumberOfReserves = 0,
                 Length = 60,
             });
             roster = UpdateOffsets(roster);

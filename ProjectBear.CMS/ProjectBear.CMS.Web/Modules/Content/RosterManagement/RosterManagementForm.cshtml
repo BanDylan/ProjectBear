@@ -10,7 +10,7 @@
         </div>
 
         <div class="group">
-            @Html.TextBoxFor(m => m.Date, new { id = "Date", type = "text", onblur = "SetDate()" })
+            @Html.TextBoxFor(m => m.Date, "{0:dd/MM/yyyy HH:mm}", new { id = "Date", type = "text", onchange = "SetDate()" })
             <span class="highlight"></span> <span class="bar"></span>
             <label>Start date</label>
             <span id="DateValidation" style="display:none" class="field-validation-error text-danger">Enter a date for this roster</span>
@@ -82,12 +82,32 @@
     }
 </div>
 
+<link rel="stylesheet" type="text/css" href="~/Content/css/jquery.datetimepicker.min.css" />
+<script src="/Scripts/jquery.datetimepicker.full.min.js"></script>
 <script type="text/javascript">
+    $(document).ready(function () {
+        $("#RosterForm").find("#Date").datetimepicker({
+            changeDay: true,
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd/mm/yy',
+            timeFormat: 'hh:mm',
+            gotoCurrent: true,
+            datepicker: true,
+            timepicker: true,
+            step: 15,
+            theme: 'dark',
+        });//.datetimepicker("setDate", "0");
+
+        $("#RosterForm").find("#Date").on('click', function () {
+            $("#RosterForm").find("#Date").datetimepicker('show');
+        });
+    });
 
     function SetDate() {
         var value = $('#RosterForm').find('#Date')[0].value;
         $.ajax({
-            url: '@Url.Action("SetDate", "RosterManagement")',
+            url: '@Url.Action("SetStartTime", "RosterManagement")',
             type: 'POST',
             data: {
                 value: value,
@@ -215,7 +235,7 @@
             }
 
             var numberOfPlayers = form.find('#NumberOfPlayers' + i)[0].value
-            if (numberOfPlayers > 0) {
+            if (numberOfPlayers >= 0) {
                 form.find("#NumberOfPlayersValidation" + i).hide();
             }
             else {

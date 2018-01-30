@@ -253,7 +253,7 @@
             }
 
             var numberOfPlayers = form.find('#NumberOfPlayers' + i)[0].value
-            if (numberOfPlayers > 0) {
+            if (numberOfPlayers >= 0) {
                 form.find("#NumberOfPlayersValidation" + i).hide();
             }
             else {

@@ -169,6 +169,7 @@
     <Content Include="Content\colorbox\images\loading.gif" />
     <Content Include="Content\colorbox\images\loading_background.png" />
     <Content Include="Content\colorbox\jquery.colorbox.css" />
+    <Content Include="Content\css\jquery.datetimepicker.min.css" />
     <Content Include="Content\css\select2-spinner.gif" />
     <Content Include="Content\css\select2.css" />
     <Content Include="Content\css\select2.png" />
@@ -504,6 +505,8 @@
     <Content Include="Content\serenity\serenity.css" />
     <Content Include="Content\simple-line-icons.css" />
     <Content Include="Content\site\images\accordion-arrows.png" />
+    <Content Include="Scripts\jquery.datetimepicker.full.js" />
+    <Content Include="Scripts\jquery.datetimepicker.full.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="wkhtmltopdf-license.txt" />
@@ -1223,6 +1226,7 @@
     <Content Include="Modules\Content\RosterManagement\RosterManagementIndex.cshtml" />
     <Content Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementForm.cshtml" />
     <Content Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementIndex.cshtml" />
+    <Content Include="Scripts\datetimepicker-master.zip" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />

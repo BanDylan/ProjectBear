@@ -115,8 +115,8 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
             var template = GetSession();
             template.TimeSlots.Add(new TimeSlotTemplate()
             {
-                NumberOfPlayers = 1,
-                NumberOfReserves = 1,
+                NumberOfPlayers = 0,
+                NumberOfReserves = 0,
                 Length = 60,
             });
             template = UpdateOffsets(template);

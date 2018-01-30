@@ -1,0 +1,35 @@
+﻿@model List<ProjectBear.Web.Models.RosterViewModel>
+
+@using (Ajax.BeginForm("Rosters", "Home", null, new AjaxOptions { }, new { id = "Rosters" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Rosters</h3>
+            <div class="mobile15LeftPad">
+                <div class="group">
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <div id="@string.Format("roster{0}", i)">
+                            <label>@Model[i].Date.ToLongDateString()</label>
+                        </div>         
+                    }
+                </div>
+
+                <div class="col-xs-12 marginbottom60 blueDashedBorder text-center  ">
+                    <div class="group text-center margintop30">
+                        <button type="button" onclick="AddEducation(@(ViewData["prefix"] + "EducationForm"))" class="btn btn-primary margintopMobile20 text-left addWorkExperienceBtn relative"><span class="addIcon"><img class="addIconPos" width="20" src="~/html/img/plus-icon.svg" alt=""></span>Add education</button>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="marginbottom60">
+                    <button type="button" onclick="NavigateBack()" class="btn btn-default margintopMobile20 width144 float-left text-left">Back</button>
+                    <button type="button" onclick="ValidateAndProceed(@Model.Count)" class="btn  btn-primary margintopMobile20 float-right  width144">Next</button>
+                    <div class="clearfix"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
