@@ -13,7 +13,7 @@ namespace ProjectBear.Web.Models
             TimeSlots = new List<TimeSlotViewModel>();
         }
 
-        public RosterViewModel(Roster roster)
+        public RosterViewModel(Roster roster, Guid? currentUserProfileId = null)
         {
             TimeSlots = new List<TimeSlotViewModel>();
             RosterId = roster.RosterId;
@@ -21,7 +21,7 @@ namespace ProjectBear.Web.Models
 
             foreach(var timeSlot in roster.TimeSlots.OrderBy(x => x.Offset))
             {
-                TimeSlots.Add(new TimeSlotViewModel(timeSlot, Date));
+                TimeSlots.Add(new TimeSlotViewModel(timeSlot, Date, currentUserProfileId));
             }
         }
 

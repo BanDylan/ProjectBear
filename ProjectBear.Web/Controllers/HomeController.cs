@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity.Owin;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using ProjectBear.Data;
 using ProjectBear.Web.Models;
 using System;
@@ -53,13 +54,16 @@ namespace ProjectBear.Web.Controllers
         [HttpGet]
         public ActionResult Rosters()
         {
+            string userId = User?.Identity?.GetUserId();
+            Guid? profileId = db.Profile.SingleOrDefault(m => m.AspUserId == userId)?.ProfileId;
+
             List<RosterViewModel> rosters = new List<RosterViewModel>();
             var dbRosters = db.Roster.Where(x => x.IsPublished).ToList();
             dbRosters = dbRosters.Where(x => x.Date > (DateTime.Now).AddDays(-1.0)).OrderBy(x => x.Date).ToList();
 
             foreach (var dbRoster in dbRosters)
             {
-                rosters.Add(new RosterViewModel(dbRoster));
+                rosters.Add(new RosterViewModel(dbRoster, profileId));
             }
   
             return View(rosters);

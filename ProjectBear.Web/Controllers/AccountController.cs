@@ -7,6 +7,7 @@ using ProjectBear.Data;
 using ProjectBear.Web.Models;
 using Microsoft.AspNet.Identity;
 using System.Linq;
+using System;
 
 namespace ProjectBear.Web.Controllers
 {
@@ -83,7 +84,8 @@ namespace ProjectBear.Web.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToAction("Index", "Home");
+                    SteamNameUpdateCheck(loginInfo);
+                    return RedirectToAction("Rosters", "Home");
                 //case SignInStatus.LockedOut:
                 //    return View("Lockout");
                 //case SignInStatus.RequiresVerification:
@@ -97,6 +99,30 @@ namespace ProjectBear.Web.Controllers
             }
         }
 
+        private void SteamNameUpdateCheck(ExternalLoginInfo loginInfo)
+        {
+            var aspUserId = UserManager.Users.FirstOrDefault(y => y.Logins.Any(z => z.ProviderKey == loginInfo.Login.ProviderKey))?.Id;
+            if(aspUserId != null)
+            {
+                var profileId = db.Profile.FirstOrDefault(x => x.AspUserId == aspUserId)?.ProfileId;
+                if(profileId != null)
+                {
+                    var lastRecordedPlayerName = db.ProfileSteamName.Where(x => x.ProfileId == profileId).OrderByDescending(x => x.FirstUsedDate).FirstOrDefault()?.SteamName;
+
+                    if (lastRecordedPlayerName != loginInfo.DefaultUserName)
+                    {
+                        db.ProfileSteamName.Add(new ProfileSteamName
+                        {
+                            ProfileId = profileId.Value,
+                            SteamName = loginInfo.DefaultUserName,
+                            FirstUsedDate = DateTime.Now,
+                        });
+                        db.SaveChanges();
+                    }
+                }              
+            }          
+        }
+
         //
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
@@ -106,7 +132,6 @@ namespace ProjectBear.Web.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-
                 return PartialView(model);
             }
 
@@ -118,7 +143,7 @@ namespace ProjectBear.Web.Controllers
                 {
                     return PartialView("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Username };
+                var user = new ApplicationUser { UserName = Guid.NewGuid().ToString() };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -133,6 +158,7 @@ namespace ProjectBear.Web.Controllers
                     if (result.Succeeded)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        SteamNameUpdateCheck(info);
                         return RedirectToAction("Index", "Home");
                     }
                 }

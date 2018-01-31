@@ -130,6 +130,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                     IsPublished = roster.IsPublished,
                     TimeSlots = roster.TimeSlots.ToList(),
                 };
+                SetSession(model);
                 return View("~/Modules/Content/RosterManagement/RosterManagementForm.cshtml", model);
             }
             return View("~/Modules/Content/RosterManagement/RosterManagementIndex.cshtml");
@@ -181,7 +182,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
             var roster = GetSession();
             try
             {
-                roster.Date = DateTime.ParseExact(value, "dd/MM/yyyy hh:mm", CultureInfo.InvariantCulture);
+                roster.Date = DateTime.ParseExact(value, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
                 roster.Edited = true;
                 SetSession(roster);
                 return true;
@@ -252,16 +253,6 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
             var roster = GetSession();
             roster.TimeSlots[index].Length = value;
             roster = UpdateOffsets(roster);
-            roster.Edited = true;
-            SetSession(roster);
-            return true;
-        }
-
-        [HttpPost]
-        public bool SetTimeSlotOffset(int value, int index)
-        {
-            var roster = GetSession();
-            roster.TimeSlots[index].Offset = value;
             roster.Edited = true;
             SetSession(roster);
             return true;

@@ -9,7 +9,7 @@
             <hr />
         </div>
 
-        <div class="group">
+        <div class="group" style="margin-bottom:10px">
             @Html.TextBoxFor(m => m.Date, "{0:dd/MM/yyyy HH:mm}", new { id = "Date", type = "text", onchange = "SetDate()" })
             <span class="highlight"></span> <span class="bar"></span>
             <label>Start date</label>
@@ -20,7 +20,7 @@
         <div class="group">
             @for (int i = 0; i < Model.TimeSlots.Count; i++)
             {
-                <div id="@string.Format("TimeSlot{0}", i)" class="workExperSection margintop30">
+                <div id="@string.Format("TimeSlot{0}", i)" style="margin-bottom:20px; padding:10px; background-color: #dddddd">
                     <div class="row">
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
@@ -57,7 +57,7 @@
                         </div>
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
-                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfReserves, new { id = string.Format("NumberOfReserves{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotumberOfReserves({0})", i) })
+                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfReserves, new { id = string.Format("NumberOfReserves{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfReserves({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
                                 <label>Number of Reserve Slots</label>
                                 <span id="@string.Format("NumberOfReservesValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter the number of reserve slots for this time slot</span>
@@ -87,17 +87,13 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#RosterForm").find("#Date").datetimepicker({
-            changeDay: true,
-            changeMonth: true,
-            changeYear: true,
-            dateFormat: 'dd/mm/yy',
-            timeFormat: 'hh:mm',
-            gotoCurrent: true,
-            datepicker: true,
-            timepicker: true,
+            //changeDay: true,
+            //changeMonth: true,
+            //changeYear: true,
+            format: 'd/m/Y H:i',  
             step: 15,
-            theme: 'dark',
-        });//.datetimepicker("setDate", "0");
+            theme: 'dark', 
+        });
 
         $("#RosterForm").find("#Date").on('click', function () {
             $("#RosterForm").find("#Date").datetimepicker('show');
@@ -164,22 +160,10 @@
         });
     }
 
-    function SetTimeSlotOffset(i) {
-        var value = $('#RosterForm').find('#Offset' + i)[0].value;
-        $.ajax({
-            url: '@Url.Action("SetTimeSlotOffset", "RosterManagement")',
-            type: 'POST',
-            data: {
-                value: value,
-                index: i,
-            },
-        });
-    }
-
     function SetTimeSlotNumberOfPlayers(i) {
         var value = $('#RosterForm').find('#NumberOfPlayers' + i)[0].value;
         $.ajax({
-            url: '@Url.Action("SetTimeSlotNumberOfPlayers", "RosterManagement")',
+            url: '@Url.Action("SetTimeSlotPlayerCount", "RosterManagement")',
             type: 'POST',
             data: {
                 value: value,
@@ -191,7 +175,7 @@
     function SetTimeSlotNumberOfReserves(i) {
         var value = $('#RosterForm').find('#NumberOfReserves' + i)[0].value;
         $.ajax({
-            url: '@Url.Action("SetTimeSlotNumberOfReserves", "RosterManagement")',
+            url: '@Url.Action("SetTimeSlotReserveCount", "RosterManagement")',
             type: 'POST',
             data: {
                 value: value,

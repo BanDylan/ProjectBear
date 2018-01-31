@@ -34,14 +34,14 @@
         <div class="col-md-8 col-sm-12">
             <table class="table table bordered">
                 <tr>
-                    <th>Date</th>
+                    <th>Starting Date / Time</th>
                     <th>Published</th>
                     <th colspan="2"></th>
                 </tr>
                 @foreach (var roster in Model.RosterList)
                 {
                 <tr>
-                    <td>@string.Format(roster.Date.ToString(), "dd MMM yyyy")</td>
+                    <td>@roster.Date.ToString("dd MMM yyyy HH:mm")</td>
                     <td>@(roster.IsPublished ? "Published" : "Hidden")</td>
 
 

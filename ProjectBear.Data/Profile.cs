@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectBear.Data
 {
@@ -14,6 +11,7 @@ namespace ProjectBear.Data
         {
             PlayerSlots = new HashSet<PlayerInTimeSlot>();
             ReserveSlots = new HashSet<ReserveInTimeSlot>();
+            ProfileSteamNames = new HashSet<ProfileSteamName>();
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -30,6 +28,7 @@ namespace ProjectBear.Data
 
         public virtual ICollection<PlayerInTimeSlot> PlayerSlots { get; set; }
         public virtual ICollection<ReserveInTimeSlot> ReserveSlots { get; set; }
+        public virtual ICollection<ProfileSteamName> ProfileSteamNames { get; set; }
 
         [ForeignKey("AspUserId")]
         public virtual ApplicationUser AspUser { get; set; }

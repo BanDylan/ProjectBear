@@ -68,7 +68,12 @@
     <Compile Include="Migrations\201801221210496_ProfileStrikesAndBans.Designer.cs">
       <DependentUpon>201801221210496_ProfileStrikesAndBans.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801311028391_AddedProfileSteamNamesTable.cs" />
+    <Compile Include="Migrations\201801311028391_AddedProfileSteamNamesTable.Designer.cs">
+      <DependentUpon>201801311028391_AddedProfileSteamNamesTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="ProfileSteamName.cs" />
     <Compile Include="ReserveInTimeSlot.cs" />
     <Compile Include="Profile.cs" />
     <Compile Include="ProjectBearDataContext.cs" />
@@ -89,6 +94,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801221210496_ProfileStrikesAndBans.resx">
       <DependentUpon>201801221210496_ProfileStrikesAndBans.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801311028391_AddedProfileSteamNamesTable.resx">
+      <DependentUpon>201801311028391_AddedProfileSteamNamesTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
