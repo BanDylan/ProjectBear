@@ -5,49 +5,53 @@
     @Html.AntiForgeryToken()
     <div class="row">
         <div class="col-xs-12">
-            <h3>Rosters</h3>
-            <div class="mobile15LeftPad">
-                <div class="group">
-                    @for (int i = 0; i < Model.Count; i++)
-                    {
-                        <div id="@string.Format("roster{0}", i)" class="jumbotron" style="margin-bottom:40px; padding:20px">
-                            <label style="margin-bottom:40px">@Model[i].Date.ToLongDateString()</label>
+            <h2 style="margin-top:20px; font-weight: 400">Rosters</h2>
+            <div>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <div id="@string.Format("roster{0}", i)" class="jumbotron" style="margin-top:40px; padding:20px">
+                        <label style="margin-bottom:20px">@Model[i].Date.ToLongDateString()</label>
 
-                            <div id="@string.Format("r{0}timeslots", i)">
-                                @for(int j = 0; j < Model[i].TimeSlots.Count; j++)
-                                {
-                                    <div id="@string.Format("r{0}-ts{1}", i, j)" class="jumbotron" style="margin-bottom:10px; padding:40px; background-color:#dddddd">
-                                        <label style="@(Model[i].TimeSlots[j].NumberOfPlayers == 0 ? "" : "margin-bottom:40px;")">@Model[i].TimeSlots[j].GameName: @Model[i].TimeSlots[j].StartTime.ToString("HH:mm") - @Model[i].TimeSlots[j].EndTime.ToString("HH:mm") @(Model[i].TimeSlots[j].NumberOfPlayers == 0 ? "(No slots available)" : "")</label>
-                                        @if(Model[i].TimeSlots[j].NumberOfPlayers > 0)
-                                        {
-                                            <div id="@string.Format("r{0}ts{1}players", i, j)" class="jumbotron" style="margin-bottom:20px; padding:20px; background-color:#cccccc">                                      
-                                                <label style="margin-bottom:40px">Players: @(Model[i].TimeSlots[j].NumberOfPlayers - Model[i].TimeSlots[j].Players.Count) slots remaining.</label>
-                                                @for(int k = 0; k < Model[i].TimeSlots[j].Players.Count; k++)
-                                                {
-                                                    <label style="margin-bottom:40px">@Model[i].TimeSlots[j].Players[k].PlayerName</label>
-                                                }
-                                                <div id="@string.Format("r{0}ts{1}bookButtons", i, j)" class="@(Model[i].TimeSlots[j].BookingButtonsEnabled ? "" : "hidden")">
-                                                    <div id="@string.Format("r{0}ts{1}bookPlayerButtons", i, j)" style="float: left">
-                                                        <button type="button" onclick="" class="btn btn-primary @(Model[i].TimeSlots[j].IsPlayerBooked ? "hidden" : "")" style="background-color: @(Model[i].TimeSlots[j].CanBookPlayer ? "#00ff00" : "#bbbbbb")">Book Player Slot</button>
-                                                        <button type="button" onclick="" class="btn btn-primary @(Model[i].TimeSlots[j].IsPlayerBooked ? "" : "hidden")" style="background-color:#ff0000">Cancel Player Slot</button>
+                        <div id="@string.Format("r{0}timeslots", i)">
+                            @for(int j = 0; j < Model[i].TimeSlots.Count; j++)
+                            {
+                                <div id="@string.Format("r{0}-ts{1}", i, j)" class="jumbotron" style="margin-bottom:10px; padding:20px; background-color:#cccccc">
+                                    <div style="float:left">
+                                        <label style="display: block; line-height: 1">@Model[i].TimeSlots[j].StartTime.ToString("HH:mm") - @Model[i].TimeSlots[j].EndTime.ToString("HH:mm")</label>
+                                        <label style="line-height: 1">@Model[i].TimeSlots[j].GameName: </label>
+                                        <label style="font-weight: 100; line-height: 1">@(Model[i].TimeSlots[j].NumberOfPlayers == 0 ? "No slots available" : Model[i].TimeSlots[j].Players.Count == Model[i].TimeSlots[j].NumberOfPlayers ? "Fully booked" : Model[i].TimeSlots[j].NumberOfPlayers - Model[i].TimeSlots[j].Players.Count + " player slots remaining (" + Model[i].TimeSlots[j].NumberOfPlayers + " in total)")</label>
+                                    </div>
+                                    <div style="float:right">
+                                        @if (Model[i].TimeSlots[j].NumberOfPlayers > 0)
+                                        {        
+                                            <div id="@string.Format("r{0}ts{1}bookButtons", i, j)" class="@(Model[i].TimeSlots[j].BookingButtonsEnabled ? "" : "hidden")">
+                                                <div id="@string.Format("r{0}ts{1}bookPlayerButtons", i, j)" style="margin-bottom:10px">
+                                                    <button type="button" onclick="" class="btn @(Model[i].TimeSlots[j].CanBookPlayer ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsPlayerBooked ? "hidden" : "")">Book Player Slot</button>
+                                                    <button type="button" onclick="" class="btn btn-cancel @(Model[i].TimeSlots[j].IsPlayerBooked ? "" : "hidden")">Cancel Player Slot</button>
 
-                                                    </div>
-
-                                                    <div id="@string.Format("r{0}ts{1}bookReserveButtons", i, j)">
-                                                        <button type="button" onclick="" class="btn btn-primary @(Model[i].TimeSlots[j].IsReserveBooked ? "hidden" : "")" style="background-color: @(Model[i].TimeSlots[j].CanBookReserve ? "#00ff00" : "#bbbbbb")">Book Reserve Slot</button>
-                                                        <button type="button" onclick="" class="btn btn-primary @(Model[i].TimeSlots[j].IsReserveBooked ? "" : "hidden")" style="background-color:#ff0000">Cancel Reserve Slot</button>
-                                                    </div>
-                                                    <div class="clearfix"></div>
-                                                </div>    
+                                                </div>
+                                                <div id="@string.Format("r{0}ts{1}bookReserveButtons", i, j)">
+                                                    <button type="button" onclick="" class="btn @(Model[i].TimeSlots[j].CanBookReserve ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsReserveBooked ? "hidden" : "")">Book Reserve Slot</button>
+                                                    <button type="button" onclick="" class="btn btn-cancel @(Model[i].TimeSlots[j].IsReserveBooked ? "" : "hidden")">Cancel Reserve Slot</button>
+                                                </div>
                                             </div>
-                                        }   
-                                    </div>  
-                                }
-                            </div>
-                        </div>       
-                    }
-                </div>
+                                            <div class="clearfix"></div>
+                                        }
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div id="@string.Format("r{0}ts{1}players", i, j)" style="float: left">
+                                        @for (int k = 0; k < Model[i].TimeSlots[j].Players.Count; k++)
+                                        {
+                                            <label style="margin-bottom:40px">@Model[i].TimeSlots[j].Players[k].PlayerName</label>
+                                        }
+                                    </div>                   
+                                </div>  
+                            }
+                        </div>
+                    </div>       
+                }
             </div>
+
         </div>
     </div>
 }
