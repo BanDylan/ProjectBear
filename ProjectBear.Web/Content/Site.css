@@ -23,6 +23,17 @@ textarea {
     max-width: 280px;
 }
 
+.nav-bar-item{
+    color: #999999;
+    text-decoration: none;
+    padding: 15px;
+    line-height: 20px;
+    position: relative;
+    display: block;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
 .btn-book {
     color: #000000;
     background-color: #3ba53f;

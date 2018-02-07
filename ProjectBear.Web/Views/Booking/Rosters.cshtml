@@ -1,6 +1,6 @@
 ﻿@model List<ProjectBear.Web.Models.RosterViewModel>
 
-@using (Ajax.BeginForm("Rosters", "Home", null, new AjaxOptions { }, new { id = "Rosters" }))
+@using (Ajax.BeginForm("Rosters", "Booking", null, new AjaxOptions { }, new { id = "Rosters" }))
 {
     @Html.AntiForgeryToken()
     <div class="row">

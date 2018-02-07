@@ -52,19 +52,16 @@ namespace ProjectBear.Web.Controllers
             }
         }
 
-
         //
         // POST: /Account/ExternalLogin
-        [HttpPost]
+        //[HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public ActionResult ExternalLogin(string provider, string returnUrl)
+        //[ValidateAntiForgeryToken]
+        public ActionResult ExternalLogin()//string provider, string returnUrl)
         {
-            // https://stackoverflow.com/questions/20737578/asp-net-sessionid-owin-cookies-do-not-send-to-browser
-            //Session["Workaround"] = 0;
 
-            // Request a redirect to the external login provider
-            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
+            return new ChallengeResult("Steam", Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = "" }));
+            //return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
         // GET: /Account/ExternalLoginCallback
@@ -75,7 +72,7 @@ namespace ProjectBear.Web.Controllers
 
             if (loginInfo == null)
             {
-                return View("Error");// RedirectToAction("Index", "Home");
+                return View("Error");
             }
 
             // Sign in the user with this external login provider if the user already has a login
@@ -85,7 +82,7 @@ namespace ProjectBear.Web.Controllers
             {
                 case SignInStatus.Success:
                     SteamNameUpdateCheck(loginInfo);
-                    return RedirectToAction("Rosters", "Home");
+                    return RedirectToAction("Rosters", "Booking");
                 //case SignInStatus.LockedOut:
                 //    return View("Lockout");
                 //case SignInStatus.RequiresVerification:
@@ -159,7 +156,7 @@ namespace ProjectBear.Web.Controllers
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         SteamNameUpdateCheck(info);
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Roster", "Booking");
                     }
                 }
                 AddErrors(new IdentityResult(result.Errors.Where(x => !(x.Contains("Name") && x.Contains("is already taken.")))));
@@ -167,6 +164,14 @@ namespace ProjectBear.Web.Controllers
 
             ViewBag.ReturnUrl = returnUrl;
             return PartialView(model);
+        }
+
+        [ValidateAntiForgeryToken]
+        public ActionResult Logout()
+        {
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+
+            return RedirectToAction("Roster", "Booking");
         }
 
 

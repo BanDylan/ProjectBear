@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace ProjectBear.Web.Controllers
 {
-    public class HomeController : Controller
+    public class BookingController : Controller
     {
         ProjectBearDataContext db = new ProjectBearDataContext();
 
@@ -40,12 +40,12 @@ namespace ProjectBear.Web.Controllers
             }
         }
 
-        public HomeController()
+        public BookingController()
         {
 
         }
 
-        public HomeController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        public BookingController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -67,20 +67,6 @@ namespace ProjectBear.Web.Controllers
             }
   
             return View(rosters);
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
         }
     }
 }

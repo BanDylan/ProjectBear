@@ -21,32 +21,32 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Jowybear", "Rosters", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Jowybear", "Rosters", "Booking", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Rosters", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Rosters", "Rosters", "Booking")</li>
                     @if (!Request.IsAuthenticated)
                     {
                         <li>
-                            @using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = new ExternalLoginViewModels() }))
-                            {
+                            @{ 
+                                var routeValues = new RouteValueDictionary();
+                                routeValues.Add("provider", "Steam");
+                                routeValues.Add("returnUrl", "");
+                             }
+                             @Html.AntiForgeryToken()
+                             @Html.ActionLink("Sign in with Steam", "ExternalLogin", "Account")
+
+                            @*@using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = new ExternalLoginViewModels() }))*@
+                            @*{
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="socialLink" id="Steam" name="provider" value="Steam"><span class="socialIcons">@*<img width="40" height="40" src="~/html/img/facebook-icon.svg" alt="" />*@</span>&nbsp; &nbsp;Sign in with Steam</button>
-                            }
+                                <button type="submit" class="socialLink" id="Steam" name="provider" value="Steam"><span class="socialIcons"></span>&nbsp; &nbsp;Sign in with Steam</button>
+                            }*@
                         </li>
                     }
                     else
                     {
-                        <li>
-                            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
-                            {
-                                @Html.AntiForgeryToken()
-                                <a href="javascript:document.getElementById('logoutForm').submit()" class="login-right"><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;Log off</a>
-                            }
-                        </li>
+                        <li>@Html.ActionLink("Logout", "Logout", "Account")</li>
                     }
                 </ul>
             </div>
