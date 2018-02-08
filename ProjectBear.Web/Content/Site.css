@@ -34,23 +34,39 @@ textarea {
     box-sizing: border-box;
 }
 
-.btn-book {
+
+.btn-book,
+.btn-book:focus {
     color: #000000;
     background-color: #3ba53f;
-    border-color: #3ba53f;
+    border: none;
+    outline: none;
     width: 144px;
 }
 
-.btn-cancel {
+.btn-cancel,
+.btn-cancel:focus {
     color: #000000;
     background-color: #cc3737;
-    border-color: #cc3737;
+    border: none;
+    outline: none;
     width: 144px;
 }
 
-.btn-disabled {
+.btn-disabled,
+.btn-disabled:focus {
     color: #000000;
     background-color: #888888;
-    border-color: #888888;
+    border: none;
+    outline: none;
     width: 144px;
+}
+
+button[type="button"]::-moz-focus-inner {
+    border: 0;
+}
+
+.modal {
+    outline: none;
+    overflow:hidden;
 }

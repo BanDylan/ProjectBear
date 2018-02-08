@@ -72,6 +72,14 @@
     <Compile Include="Migrations\201801311028391_AddedProfileSteamNamesTable.Designer.cs">
       <DependentUpon>201801311028391_AddedProfileSteamNamesTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802080742316_RemovedReserveCountAddedIsSteamGame.cs" />
+    <Compile Include="Migrations\201802080742316_RemovedReserveCountAddedIsSteamGame.Designer.cs">
+      <DependentUpon>201802080742316_RemovedReserveCountAddedIsSteamGame.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802080808577_SwappedSteamNameToNonSteamNameRemovedTwitchNameFromBookings.cs" />
+    <Compile Include="Migrations\201802080808577_SwappedSteamNameToNonSteamNameRemovedTwitchNameFromBookings.Designer.cs">
+      <DependentUpon>201802080808577_SwappedSteamNameToNonSteamNameRemovedTwitchNameFromBookings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ProfileSteamName.cs" />
     <Compile Include="ReserveInTimeSlot.cs" />
@@ -97,6 +105,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801311028391_AddedProfileSteamNamesTable.resx">
       <DependentUpon>201801311028391_AddedProfileSteamNamesTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802080742316_RemovedReserveCountAddedIsSteamGame.resx">
+      <DependentUpon>201802080742316_RemovedReserveCountAddedIsSteamGame.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802080808577_SwappedSteamNameToNonSteamNameRemovedTwitchNameFromBookings.resx">
+      <DependentUpon>201802080808577_SwappedSteamNameToNonSteamNameRemovedTwitchNameFromBookings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

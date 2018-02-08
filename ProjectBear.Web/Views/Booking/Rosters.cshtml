@@ -13,46 +13,175 @@
                         <label style="margin-bottom:20px">@Model[i].Date.ToLongDateString()</label>
 
                         <div id="@string.Format("r{0}timeslots", i)">
-                            @for(int j = 0; j < Model[i].TimeSlots.Count; j++)
+                            @for (int j = 0; j < Model[i].TimeSlots.Count; j++)
                             {
-                                <div id="@string.Format("r{0}-ts{1}", i, j)" class="jumbotron" style="margin-bottom:10px; padding:20px; background-color:#cccccc">
+                                <div id="@string.Format("r{0}-ts{1}", i, j)" class="container jumbotron" style="margin-bottom:10px; padding:20px; background-color:#cccccc">
                                     <div style="float:left">
                                         <label style="display: block; line-height: 1">@Model[i].TimeSlots[j].StartTime.ToString("HH:mm") - @Model[i].TimeSlots[j].EndTime.ToString("HH:mm")</label>
                                         <label style="line-height: 1">@Model[i].TimeSlots[j].GameName: </label>
                                         <label style="font-weight: 100; line-height: 1">@(Model[i].TimeSlots[j].NumberOfPlayers == 0 ? "No slots available" : Model[i].TimeSlots[j].Players.Count == Model[i].TimeSlots[j].NumberOfPlayers ? "Fully booked" : Model[i].TimeSlots[j].NumberOfPlayers - Model[i].TimeSlots[j].Players.Count + " player slots remaining (" + Model[i].TimeSlots[j].NumberOfPlayers + " in total)")</label>
+
+                                        <div class="clearfix"></div>
+                                        <div id="@string.Format("r{0}ts{1}players", i, j)" style="line-height: 1">
+                                            @for (int k = 0; k < Model[i].TimeSlots[j].Players.Count; k++)
+                                            {
+                                                <label style="line-height: 1; font-size:15px">@Model[i].TimeSlots[j].Players[k].PlayerName</label>
+                                            }
+                                        </div>
                                     </div>
                                     <div style="float:right">
                                         @if (Model[i].TimeSlots[j].NumberOfPlayers > 0)
-                                        {        
+                                        {
                                             <div id="@string.Format("r{0}ts{1}bookButtons", i, j)" class="@(Model[i].TimeSlots[j].BookingButtonsEnabled ? "" : "hidden")">
                                                 <div id="@string.Format("r{0}ts{1}bookPlayerButtons", i, j)" style="margin-bottom:10px">
-                                                    <button type="button" onclick="" class="btn @(Model[i].TimeSlots[j].CanBookPlayer ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsPlayerBooked ? "hidden" : "")">Book Player Slot</button>
-                                                    <button type="button" onclick="" class="btn btn-cancel @(Model[i].TimeSlots[j].IsPlayerBooked ? "" : "hidden")">Cancel Player Slot</button>
+                                                    <button type="button" title="@Model[i].TimeSlots[j].DenyPlayerBookReason" onclick="@string.Format("DisplayNonSteamNameModalIfNeeded(\"{0}\", \"{1}\", \"{2}\")", Model[i].TimeSlots[j].TimeSlotId, Model[i].TimeSlots[j].IsSteamGame, Model[i].TimeSlots[j].CanBookPlayer);" class="btn @(Model[i].TimeSlots[j].CanBookPlayer ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsPlayerBooked ? "hidden" : "")">Book Player Slot</button>
+                                                    <button type="button" onclick="@string.Format("CancelPlayerBooking(\"{0}\")", Model[i].TimeSlots[j].TimeSlotId);" class="btn btn-cancel @(Model[i].TimeSlots[j].IsPlayerBooked ? "" : "hidden")">Cancel Player Slot</button>
+
 
                                                 </div>
                                                 <div id="@string.Format("r{0}ts{1}bookReserveButtons", i, j)">
-                                                    <button type="button" onclick="" class="btn @(Model[i].TimeSlots[j].CanBookReserve ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsReserveBooked ? "hidden" : "")">Book Reserve Slot</button>
+                                                    <button type="button" title="@Model[i].TimeSlots[j].DenyReserveBookReason" onclick="" class="btn @(Model[i].TimeSlots[j].CanBookReserve ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsReserveBooked ? "hidden" : "")">Book Reserve Slot</button>
                                                     <button type="button" onclick="" class="btn btn-cancel @(Model[i].TimeSlots[j].IsReserveBooked ? "" : "hidden")">Cancel Reserve Slot</button>
                                                 </div>
                                             </div>
                                             <div class="clearfix"></div>
                                         }
                                     </div>
-                                    <div class="clearfix"></div>
-                                    <div id="@string.Format("r{0}ts{1}players", i, j)" style="float: left">
-                                        @for (int k = 0; k < Model[i].TimeSlots[j].Players.Count; k++)
-                                        {
-                                            <label style="margin-bottom:40px">@Model[i].TimeSlots[j].Players[k].PlayerName</label>
-                                        }
-                                    </div>                   
-                                </div>  
+                                </div>
                             }
                         </div>
-                    </div>       
+                    </div>
                 }
             </div>
+        </div>
+    </div>
 
+    <div class="modal fade"  id="nonSteamNameModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Please provide player name
+                </div>
+                <div class="modal-body">
+                    Because this is not a Steam game, we can't automatically get your player name. Please provide the name you use for this game.
+                    <input id="reserveOrPlayer" type="hidden" />
+                    <input id="timeSlotId" type="hidden" />
+                    <input id="nonSteamName" type="text" onKeyDown="if (event.keyCode == 13) ValidateNonSteamName(); else ClearNonSteamNameValidation();" />
+                    <span id="nonSteamNameValidation" style="display:none" class="field-validation-error text-danger">Invalid name</span>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="confirmName" onclick="ValidateNonSteamName();" class="btn btn-book" >Submit</button>
+                </div>
+            </div>
         </div>
     </div>
 }
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var url = new URL(window.location.href);
+
+        var parameter = url.searchParams.get("modal");
+        if (parameter != null) {
+            if (parameter.toLowerCase() == "playerbookingsuccess") {
+                
+            }
+            if (parameter.toLowerCase() == "playercancellationsuccess") {
+
+            }
+            if (parameter.toLowerCase() == "reservebookingsuccess") {
+
+            }
+            if (parameter.toLowerCase() == "reservecancellationsuccess") {
+
+            }
+
+        }
+        window.history.replaceState({}, document.title, "/");
+    });
+
+    function DisplayNonSteamNameModalIfNeeded(timeSlotId, isSteamGame, canBookingBeMade) {
+        var form = $("#Rosters");
+        if (canBookingBeMade.toLowerCase() == 'true') {
+            form.find('#timeSlotId')[0].value = timeSlotId;
+            if (isSteamGame.toLowerCase() == 'true')
+                AttemptPlayerBooking();
+            else
+                form.find('#nonSteamNameModal').modal('show');
+        }      
+    }
+
+    function ClearNonSteamNameValidation() {
+        var form = $("#Rosters");
+        form.find('#nonSteamNameValidation').hide();
+    }
+
+    function ValidateNonSteamName() {
+        var form = $("#Rosters");
+        var timeSlotId = form.find('#timeSlotId')[0].value;
+        var nonSteamName = form.find('#nonSteamName')[0].value;
+
+        if (/\S/.test(nonSteamName)) {
+            form.find('#nonSteamNameModal').modal('hide');
+            AttemptPlayerBooking();
+        }
+        else {
+            form.find('#nonSteamNameValidation').show();
+        }
+    }
+
+    function AttemptPlayerBooking() {
+        var form = $("#Rosters");
+        var timeSlotId = form.find('#timeSlotId')[0].value;
+        var nonSteamName = form.find('#nonSteamName')[0].value;
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        $.ajax({
+            url: '@Url.Action("AttemptPlayerBooking", "Booking")',
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: token,
+                timeSlotId: timeSlotId,
+                nonSteamName: nonSteamName,
+            },
+            success: function (response) {
+                if (response.toLowerCase() == "success") {
+                    window.history.replaceState({}, document.title, "/?modal=playerbookingsuccess");
+                    location.reload();
+                }
+                else {
+                    //Display error modal
+                }
+            }
+            
+        });
+    }
+
+    function CancelPlayerBooking(timeSlotId) {
+        var form = $("#Rosters");
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        $.ajax({
+            url: '@Url.Action("CancelPlayerBooking", "Booking")',
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: token,
+                timeSlotId: timeSlotId,
+            },
+            success: function (response) {
+                if (response.toLowerCase() == "success") {
+                    location.reload();
+                    //Success Action & update page
+                }
+                else {
+                    //Display error modal
+                }
+            }
+        });
+    }
+
+    </script>
+
+
 

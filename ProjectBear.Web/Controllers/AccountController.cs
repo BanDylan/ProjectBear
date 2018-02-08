@@ -156,7 +156,7 @@ namespace ProjectBear.Web.Controllers
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         SteamNameUpdateCheck(info);
-                        return RedirectToAction("Roster", "Booking");
+                        return RedirectToAction("Rosters", "Booking");
                     }
                 }
                 AddErrors(new IdentityResult(result.Errors.Where(x => !(x.Contains("Name") && x.Contains("is already taken.")))));
@@ -166,12 +166,11 @@ namespace ProjectBear.Web.Controllers
             return PartialView(model);
         }
 
-        [ValidateAntiForgeryToken]
         public ActionResult Logout()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
 
-            return RedirectToAction("Roster", "Booking");
+            return RedirectToAction("Rosters", "Booking");
         }
 
 

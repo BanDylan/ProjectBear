@@ -17,9 +17,10 @@ namespace ProjectBear.Data
         [Required]
         public string GameName { get; set; }
         [Required]
-        public int NumberOfPlayers { get; set; }
+        public bool IsSteamGame { get; set; } = false;
         [Required]
-        public int NumberOfReserves { get; set; }
+        public int NumberOfPlayers { get; set; }
+        
 
         [ForeignKey("RosterTemplateId")]
         public virtual RosterTemplate RosterTemplate { get; set; }

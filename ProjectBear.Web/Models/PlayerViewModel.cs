@@ -10,18 +10,20 @@ namespace ProjectBear.Web.Models
     {
         ProjectBearDataContext db = new ProjectBearDataContext();
 
-        public PlayerViewModel(PlayerInTimeSlot user, Guid? currentUserProfileId = null)
+        public PlayerViewModel(PlayerInTimeSlot user, bool isSteamGame, Guid? currentUserProfileId = null)
         {
             ProfileId = user.ProfileId;
-            PlayerName = db.ProfileSteamName.Where(x => x.ProfileId == user.ProfileId).OrderByDescending(x => x.FirstUsedDate).FirstOrDefault().SteamName;
+            PlayerName = isSteamGame ? db.ProfileSteamName.Where(x => x.ProfileId == user.ProfileId).OrderByDescending(x => x.FirstUsedDate).FirstOrDefault().SteamName
+                                     : db.PlayersInTimeSlot.FirstOrDefault(x => x.ProfileId == user.ProfileId && x.TimeSlotId == user.TimeSlotId).NonSteamName;
             if (currentUserProfileId.HasValue)
                 MatchesLoggedInUser = currentUserProfileId.Value == user.ProfileId;
         }
 
-        public PlayerViewModel(ReserveInTimeSlot user, Guid? currentUserProfileId = null)
+        public PlayerViewModel(ReserveInTimeSlot user, bool isSteamGame, Guid? currentUserProfileId = null)
         {
             ProfileId = user.ProfileId;
-            PlayerName = db.ProfileSteamName.Where(x => x.ProfileId == user.ProfileId).OrderByDescending(x => x.FirstUsedDate).FirstOrDefault().SteamName;
+            PlayerName = isSteamGame ? db.ProfileSteamName.Where(x => x.ProfileId == user.ProfileId).OrderByDescending(x => x.FirstUsedDate).FirstOrDefault().SteamName
+                                     : db.ReservesInTimeSlot.FirstOrDefault(x => x.ProfileId == user.ProfileId && x.TimeSlotId == user.TimeSlotId).NonSteamName;
             if (currentUserProfileId.HasValue)
                 MatchesLoggedInUser = currentUserProfileId.Value == user.ProfileId;
         }

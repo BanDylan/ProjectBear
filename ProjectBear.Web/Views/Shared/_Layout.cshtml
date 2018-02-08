@@ -6,11 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
-    <script src="https://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-
-
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script src="/Scripts/bootstrap.min.js"></script>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -29,24 +30,15 @@
                     @if (!Request.IsAuthenticated)
                     {
                         <li>
-                            @{ 
-                                var routeValues = new RouteValueDictionary();
-                                routeValues.Add("provider", "Steam");
-                                routeValues.Add("returnUrl", "");
-                             }
-                             @Html.AntiForgeryToken()
                              @Html.ActionLink("Sign in with Steam", "ExternalLogin", "Account")
-
-                            @*@using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = new ExternalLoginViewModels() }))*@
-                            @*{
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="socialLink" id="Steam" name="provider" value="Steam"><span class="socialIcons"></span>&nbsp; &nbsp;Sign in with Steam</button>
-                            }*@
                         </li>
                     }
                     else
                     {
-                        <li>@Html.ActionLink("Logout", "Logout", "Account")</li>
+
+                        <li>
+                            @Html.ActionLink("Logout", "Logout", "Account")
+                        </li>
                     }
                 </ul>
             </div>

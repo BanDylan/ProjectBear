@@ -17,12 +17,7 @@ namespace ProjectBear.Data
         [Required]
         public Guid TimeSlotId { get; set; }
 
-        [Required]
-        public string SteamName { get; set; }
-
-        [Required]
-        public string TwitchName { get; set; }
-
+        public string NonSteamName { get; set; }
         [Required]
         public DateTime SignUpTime { get; set; }
 
