@@ -10,9 +10,9 @@
         </div>
 
         <div class="group" style="margin-bottom:10px">
+            <label>Start date</label>
             @Html.TextBoxFor(m => m.Date, "{0:dd/MM/yyyy HH:mm}", new { id = "Date", type = "text", onchange = "SetDate()" })
             <span class="highlight"></span> <span class="bar"></span>
-            <label>Start date</label>
             <span id="DateValidation" style="display:none" class="field-validation-error text-danger">Enter a date for this roster</span>
         </div>
 
@@ -24,17 +24,17 @@
                     <div class="row">
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
+                                <label>Game</label>
                                 @Html.TextBoxFor(m => m.TimeSlots[i].GameName, new { id = string.Format("GameName{0}", i), type = "text", onblur = string.Format("SetTimeSlotGameName({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
-                                <label>Game</label>
                                 <span id="@string.Format("GameNameValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a game for this time slot</span>
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
+                                <label>Slot Length</label>
                                 @Html.TextBoxFor(m => m.TimeSlots[i].Length, new { id = string.Format("Length{0}", i), type = "number", min = "15", onblur = string.Format("SetTimeSlotLength({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
-                                <label>Slot Length</label>
                                 <span id="@string.Format("LengthValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a duration for this time slot between 15 and 480 min</span>
                             </div>
                         </div>
@@ -49,18 +49,17 @@
                     <div class="row">
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
+                                <label>Number of Player Slots</label>
                                 @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfPlayers, new { id = string.Format("NumberOfPlayers{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfPlayers({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
-                                <label>Number of Player Slots</label>
                                 <span id="@string.Format("NumberOfPlayersValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter the number of player slots for this time slot</span>
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-12">
                             <div class="group">
-                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfReserves, new { id = string.Format("NumberOfReserves{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfReserves({0})", i) })
+                                <label>Is Steam Game</label>
+                                @Html.CheckBoxFor(m => m.TimeSlots[i].IsSteamGame, new { id = string.Format("IsSteamGame{0}", i), onchange = string.Format("SetIsSteamGame({0})", i) })
                                 <span class="highlight"></span> <span class="bar"></span>
-                                <label>Number of Reserve Slots</label>
-                                <span id="@string.Format("NumberOfReservesValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter the number of reserve slots for this time slot</span>
                             </div>
                         </div>
                     </div>
@@ -87,9 +86,6 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#RosterForm").find("#Date").datetimepicker({
-            //changeDay: true,
-            //changeMonth: true,
-            //changeYear: true,
             format: 'd/m/Y H:i',  
             step: 15,
             theme: 'dark', 
@@ -172,10 +168,10 @@
         });
     }
 
-    function SetTimeSlotNumberOfReserves(i) {
-        var value = $('#RosterForm').find('#NumberOfReserves' + i)[0].value;
+    function SetIsSteamGame(i) {
+        var value = $('#RosterForm').find('#IsSteamGame' + i)[0].checked;
         $.ajax({
-            url: '@Url.Action("SetTimeSlotReserveCount", "RosterManagement")',
+            url: '@Url.Action("SetIsSteamGame", "RosterManagement")',
             type: 'POST',
             data: {
                 value: value,
@@ -225,16 +221,7 @@
             else {
                 isValid = false;
                 form.find("#NumberOfPlayersValidation" + i).show();
-            }
-
-            var numberOfReserves = form.find('#NumberOfReserves' + i)[0].value
-            if (numberOfReserves >= 0 ) {
-                form.find("#NumberOfReservesValidation" + i).hide();
-            }
-            else {
-                isValid = false;
-                form.find("#NumberOfReservesValidation" + i).show();
-            }
+            } 
         }
 
         if (isValid) {

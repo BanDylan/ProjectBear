@@ -129,7 +129,7 @@ namespace ProjectBear.Web.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return PartialView(model);
+                return RedirectToAction("Rosters", "Booking");
             }
 
             if (ModelState.IsValid)
@@ -163,7 +163,7 @@ namespace ProjectBear.Web.Controllers
             }
 
             ViewBag.ReturnUrl = returnUrl;
-            return PartialView(model);
+            return View("~/Views/Account/ExternalLoginConfirmation.cshtml", model);
         }
 
         public ActionResult Logout()

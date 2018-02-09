@@ -90,7 +90,6 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
             if (Session["SelectedTemplateId"] == null || (Guid)Session["SelectedTemplateId"] == Guid.Empty) {
                 viewModel.TimeSlots.Add(new TimeSlot {
                     NumberOfPlayers = 0,
-                    NumberOfReserves = 0,
                     Length = 60,
                 });
             }
@@ -107,7 +106,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                         Length = timeSlot.Length,
                         Offset = timeSlot.Offset,
                         NumberOfPlayers = timeSlot.NumberOfPlayers,
-                        NumberOfReserves = timeSlot.NumberOfReserves,
+                        IsSteamGame = timeSlot.IsSteamGame,
                     });
                 }
             }
@@ -201,7 +200,6 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
             roster.TimeSlots.Add(new TimeSlot()
             {
                 NumberOfPlayers = 0,
-                NumberOfReserves = 0,
                 Length = 60,
             });
             roster = UpdateOffsets(roster);
@@ -269,12 +267,12 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
         }
 
         [HttpPost]
-        public bool SetTimeSlotReserveCount(int value, int index)
+        public bool SetIsSteamGame(bool value, int index)
         {
-            var roster = GetSession();
-            roster.TimeSlots[index].NumberOfReserves = value;
-            roster.Edited = true;
-            SetSession(roster);
+            var template = GetSession();
+            template.TimeSlots[index].IsSteamGame = value;
+            template.Edited = true;
+            SetSession(template);
             return true;
         }
 
@@ -288,7 +286,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                 var model = new Roster
                 {
                     Date = roster.Date,
-                    IsPublished = false,
+                    IsPublished = false, 
                 };
                 db.Roster.Add(model);
                 db.SaveChanges();
@@ -324,7 +322,6 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                         Length = newTimeSlot.Length,
                         Offset = newTimeSlot.Offset,
                         NumberOfPlayers = newTimeSlot.NumberOfPlayers,
-                        NumberOfReserves = newTimeSlot.NumberOfReserves,
                     };
                     db.TimeSlot.Add(timeSlotModel);
                 }

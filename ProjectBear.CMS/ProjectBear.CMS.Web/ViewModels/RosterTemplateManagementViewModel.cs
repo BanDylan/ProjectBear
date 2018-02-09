@@ -14,7 +14,6 @@ namespace ProjectBear.CMS.ViewModels
             TimeSlots.Add(new TimeSlotTemplate()
             {
                 NumberOfPlayers = 0,
-                NumberOfReserves = 0,
                 Length = 60,
                 Offset = 0,
             });

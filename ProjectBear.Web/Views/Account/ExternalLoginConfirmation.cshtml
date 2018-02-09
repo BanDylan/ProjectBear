@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Username";
 }
-@using (Ajax.BeginForm("ExternalLoginConfirmation", "Account", null, new AjaxOptions { OnComplete = "onComplete", UpdateTargetId = "update-body" }))
+@using (Html.BeginForm("ExternalLoginConfirmation", "Account"))
 {
     @Html.AntiForgeryToken()
     <div class="container bgwhite softshadow">
@@ -35,13 +35,5 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-        function onComplete() {
-            if ("@ViewData["redirect"]" != null && "@ViewData["redirect"]" != "")
-            {
-                window.location = "@ViewData["redirect"]";
-            }
-        }
-    </script>
 }
 

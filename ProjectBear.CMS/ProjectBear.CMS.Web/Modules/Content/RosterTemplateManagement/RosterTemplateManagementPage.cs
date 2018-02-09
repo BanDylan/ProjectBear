@@ -116,7 +116,6 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
             template.TimeSlots.Add(new TimeSlotTemplate()
             {
                 NumberOfPlayers = 0,
-                NumberOfReserves = 0,
                 Length = 60,
             });
             template = UpdateOffsets(template);
@@ -194,10 +193,10 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
         }
 
         [HttpPost]
-        public bool SetTimeSlotReserveCount(int value, int index)
+        public bool SetIsSteamGame(bool value, int index)
         {
             var template = GetSession();
-            template.TimeSlots[index].NumberOfReserves = value;
+            template.TimeSlots[index].IsSteamGame = value;
             template.Edited = true;
             SetSession(template);
             return true;
@@ -247,7 +246,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
                         Length = newTimeSlot.Length,
                         Offset = newTimeSlot.Offset,
                         NumberOfPlayers = newTimeSlot.NumberOfPlayers,
-                        NumberOfReserves = newTimeSlot.NumberOfReserves,
+                        IsSteamGame = newTimeSlot.IsSteamGame,
                     };
                     db.TimeSlotTemplate.Add(timeSlotModel);
                 }
