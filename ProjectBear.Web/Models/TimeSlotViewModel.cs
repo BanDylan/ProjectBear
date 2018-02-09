@@ -73,9 +73,14 @@ namespace ProjectBear.Web.Models
                     {
                         if (!db.PlayersInTimeSlot.Any(x => x.ProfileId == _currentUserProfileId && x.TimeSlot.RosterId == RosterId))
                         {
-                            DenyPlayerBookReason = "";
-                            CanBookPlayer = true;
-                            return;
+                            if (StartTime >= DateTime.Now)
+                            {
+                                DenyPlayerBookReason = "";
+                                CanBookPlayer = true;
+                                return;
+                            }
+                            else
+                                DenyPlayerBookReason = "This time slot has already started.";                            
                         }
                         else
                             DenyPlayerBookReason = "Only one Player booking per stream is allowed. You can however book as a Reserve for as many time slots as you wish. If the player slots aren't filled, or someone doesn't pitch, you may be upgraded to a Player for that time slot.";
@@ -100,9 +105,14 @@ namespace ProjectBear.Web.Models
                 {
                     if (!IsPlayerBooked)
                     {
-                        DenyReserveBookReason = "";
-                        CanBookReserve = true;
-                        return;
+                        if (StartTime >= DateTime.Now)
+                        {
+                            DenyReserveBookReason = "";
+                            CanBookReserve = true;
+                            return;
+                        }
+                        else
+                            DenyReserveBookReason = "This time slot has already started.";
                     }
                     else
                         DenyReserveBookReason = "You already have a guarenteed spot.";

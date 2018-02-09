@@ -34,7 +34,7 @@
                                     <div style="float:right">
                                         @if (Model[i].TimeSlots[j].NumberOfPlayers > 0)
                                         {
-                                            <div id="@string.Format("r{0}ts{1}bookButtons", i, j)" class="@(Model[i].TimeSlots[j].BookingButtonsEnabled ? "" : "hidden")">
+                                            <div id="@string.Format("r{0}ts{1}bookButtons", i, j)">
                                                 <div id="@string.Format("r{0}ts{1}bookPlayerButtons", i, j)" style="margin-bottom:10px">
                                                     <div class="@(Model[i].TimeSlots[j].CanBookPlayer ? "" : "buttontooltip")">
                                                         <button type="button" onclick="@string.Format("DisplayNonSteamNameModalIfNeeded(\"{0}\", \"{1}\", \"{2}\", \"{3}\")", Model[i].TimeSlots[j].TimeSlotId, Model[i].TimeSlots[j].IsSteamGame, Model[i].TimeSlots[j].CanBookPlayer, true);" class="btn @(Model[i].TimeSlots[j].CanBookPlayer ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsPlayerBooked ? "hidden" : "")">Book Player Slot</button>

@@ -91,27 +91,31 @@ namespace ProjectBear.Web.Controllers
                     {
                         if (!db.PlayersInTimeSlot.Any(x => x.ProfileId == profileId && x.TimeSlot.RosterId == timeSlot.RosterId))
                         {
-                            if (timeSlot.IsSteamGame || (!timeSlot.IsSteamGame && !string.IsNullOrWhiteSpace(nonSteamName)))
+                            if (timeSlot.Roster.Date.AddMinutes(timeSlot.Offset) >= DateTime.Now)
                             {
-                                var booking = new PlayerInTimeSlot()
+                                if (timeSlot.IsSteamGame || (!timeSlot.IsSteamGame && !string.IsNullOrWhiteSpace(nonSteamName)))
                                 {
-                                    ProfileId = profileId,
-                                    SignUpTime = DateTime.Now,
-                                    TimeSlotId = timeSlotId,
-                                    NonSteamName = nonSteamName,
-                                };
-                                db.PlayersInTimeSlot.Add(booking);
+                                    var booking = new PlayerInTimeSlot()
+                                    {
+                                        ProfileId = profileId,
+                                        SignUpTime = DateTime.Now,
+                                        TimeSlotId = timeSlotId,
+                                        NonSteamName = nonSteamName,
+                                    };
+                                    db.PlayersInTimeSlot.Add(booking);
 
-                                var overLappingReserveBooking = db.ReservesInTimeSlot.FirstOrDefault(x => x.TimeSlotId == timeSlotId && x.ProfileId == profileId);
-                                if (overLappingReserveBooking != null)
-                                    db.Entry(overLappingReserveBooking).State = EntityState.Deleted;
+                                    var overLappingReserveBooking = db.ReservesInTimeSlot.FirstOrDefault(x => x.TimeSlotId == timeSlotId && x.ProfileId == profileId);
+                                    if (overLappingReserveBooking != null)
+                                        db.Entry(overLappingReserveBooking).State = EntityState.Deleted;
 
-                                db.SaveChanges();
-                                return "success";
+                                    db.SaveChanges();
+                                    return "success";
+                                }
+                                else
+                                    return "Please provide your Player name for this game.";
                             }
                             else
-                                return "Please provide your Player name for this game.";
-                            
+                                return "This time slot has already started.";
                         }
                         else
                             return "Only one Player booking per stream is allowed. You can however book as a Reserve for as many time slots as you wish. If the player slots aren't filled, or someone doesn't pitch, you may be upgraded to a Player for that time slot.";
@@ -164,21 +168,26 @@ namespace ProjectBear.Web.Controllers
                 {
                     if (!db.PlayersInTimeSlot.Any(x => x.ProfileId == profileId && x.TimeSlot.TimeSlotId == timeSlotId))
                     {
-                        if (timeSlot.IsSteamGame || (!timeSlot.IsSteamGame && !string.IsNullOrWhiteSpace(nonSteamName)))
+                        if (timeSlot.Roster.Date.AddMinutes(timeSlot.Offset) >= DateTime.Now)
                         {
-                            var booking = new ReserveInTimeSlot()
+                            if (timeSlot.IsSteamGame || (!timeSlot.IsSteamGame && !string.IsNullOrWhiteSpace(nonSteamName)))
                             {
-                                ProfileId = profileId,
-                                SignUpTime = DateTime.Now,
-                                TimeSlotId = timeSlotId,
-                                NonSteamName = nonSteamName,
-                            };
-                            db.ReservesInTimeSlot.Add(booking);
-                            db.SaveChanges();
-                            return "success";
+                                var booking = new ReserveInTimeSlot()
+                                {
+                                    ProfileId = profileId,
+                                    SignUpTime = DateTime.Now,
+                                    TimeSlotId = timeSlotId,
+                                    NonSteamName = nonSteamName,
+                                };
+                                db.ReservesInTimeSlot.Add(booking);
+                                db.SaveChanges();
+                                return "success";
+                            }
+                            else
+                                return "Please provide your Player name for this game.";
                         }
                         else
-                            return "Please provide your Player name for this game.";
+                            return "This time slot has already started.";                  
                     }
                     else
                         return "You already have a guarenteed spot.";
@@ -199,6 +208,7 @@ namespace ProjectBear.Web.Controllers
                 var profileId = UserProfileId().Value;
                 var timeSlot = db.TimeSlot.FirstOrDefault(x => x.TimeSlotId == timeSlotId);
                 var timeSlotBooking = db.ReservesInTimeSlot.FirstOrDefault(x => x.TimeSlotId == timeSlotId && x.ProfileId == profileId);
+
 
                 if (timeSlotBooking != null)
                 {
