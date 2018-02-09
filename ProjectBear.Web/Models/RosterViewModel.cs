@@ -31,6 +31,5 @@ namespace ProjectBear.Web.Models
 
 
         public List<TimeSlotViewModel> TimeSlots { get; set; }
-
     }
 }

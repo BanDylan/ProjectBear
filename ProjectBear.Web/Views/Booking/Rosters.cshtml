@@ -4,15 +4,17 @@
 {
     @Html.AntiForgeryToken()
     <div class="row">
+        <input id="minimized" type="hidden" />
         <div class="col-xs-12">
             <h2 style="margin-top:20px; font-weight: 400">Rosters</h2>
             <div>
                 @for (int i = 0; i < Model.Count; i++)
                 {
-                    <div id="@string.Format("roster{0}", i)" class="jumbotron" style="margin-top:40px; padding:20px">
+                    <div id="@string.Format("ros{0}", i)" class="jumbotron" style="margin-top:40px; padding:20px">
                         <label style="margin-bottom:20px">@Model[i].Date.ToLongDateString()</label>
+                        <span id="@string.Format("toggleButton{0}", i)" class="glyphicon glyphicon-minus" onclick="@string.Format("ToggleDisplayRosterTimeSlots(\"{0}\", \"{1}\")", i, Model[i].RosterId);" style="float:right; cursor: pointer"></span>
 
-                        <div id="@string.Format("r{0}timeslots", i)">
+                        <div id="@string.Format("roster{0}timeslots", i)" style="display: block">
                             @for (int j = 0; j < Model[i].TimeSlots.Count; j++)
                             {
                                 <div id="@string.Format("r{0}-ts{1}", i, j)" class="container jumbotron" style="margin-bottom:10px; padding:20px; background-color:#cccccc">
@@ -34,14 +36,20 @@
                                         {
                                             <div id="@string.Format("r{0}ts{1}bookButtons", i, j)" class="@(Model[i].TimeSlots[j].BookingButtonsEnabled ? "" : "hidden")">
                                                 <div id="@string.Format("r{0}ts{1}bookPlayerButtons", i, j)" style="margin-bottom:10px">
-                                                    <button type="button" title="@Model[i].TimeSlots[j].DenyPlayerBookReason" onclick="@string.Format("DisplayNonSteamNameModalIfNeeded(\"{0}\", \"{1}\", \"{2}\")", Model[i].TimeSlots[j].TimeSlotId, Model[i].TimeSlots[j].IsSteamGame, Model[i].TimeSlots[j].CanBookPlayer);" class="btn @(Model[i].TimeSlots[j].CanBookPlayer ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsPlayerBooked ? "hidden" : "")">Book Player Slot</button>
+                                                    <div class="@(Model[i].TimeSlots[j].CanBookPlayer ? "" : "buttontooltip")">
+                                                        <button type="button" onclick="@string.Format("DisplayNonSteamNameModalIfNeeded(\"{0}\", \"{1}\", \"{2}\", \"{3}\")", Model[i].TimeSlots[j].TimeSlotId, Model[i].TimeSlots[j].IsSteamGame, Model[i].TimeSlots[j].CanBookPlayer, true);" class="btn @(Model[i].TimeSlots[j].CanBookPlayer ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsPlayerBooked ? "hidden" : "")">Book Player Slot</button>
+                                                        <span class="tooltiptext">@Model[i].TimeSlots[j].DenyPlayerBookReason</span>
+                                                    </div>
                                                     <button type="button" onclick="@string.Format("CancelPlayerBooking(\"{0}\")", Model[i].TimeSlots[j].TimeSlotId);" class="btn btn-cancel @(Model[i].TimeSlots[j].IsPlayerBooked ? "" : "hidden")">Cancel Player Slot</button>
 
 
-                                                </div>
+                                                    </div>
                                                 <div id="@string.Format("r{0}ts{1}bookReserveButtons", i, j)">
-                                                    <button type="button" title="@Model[i].TimeSlots[j].DenyReserveBookReason" onclick="" class="btn @(Model[i].TimeSlots[j].CanBookReserve ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsReserveBooked ? "hidden" : "")">Book Reserve Slot</button>
-                                                    <button type="button" onclick="" class="btn btn-cancel @(Model[i].TimeSlots[j].IsReserveBooked ? "" : "hidden")">Cancel Reserve Slot</button>
+                                                    <div class="@(Model[i].TimeSlots[j].CanBookReserve ? "" : "buttontooltip")">
+                                                        <button type="button" onclick="@string.Format("DisplayNonSteamNameModalIfNeeded(\"{0}\", \"{1}\", \"{2}\", \"{3}\")", Model[i].TimeSlots[j].TimeSlotId, Model[i].TimeSlots[j].IsSteamGame, Model[i].TimeSlots[j].CanBookReserve, false);" class="btn @(Model[i].TimeSlots[j].CanBookReserve ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsReserveBooked ? "hidden" : "")">Book Reserve Slot</button>
+                                                        <span class="tooltiptext">@Model[i].TimeSlots[j].DenyReserveBookReason</span>
+                                                    </div>
+                                                    <button type="button" onclick="@string.Format("CancelReserveBooking(\"{0}\")", Model[i].TimeSlots[j].TimeSlotId);" class="btn btn-cancel @(Model[i].TimeSlots[j].IsReserveBooked ? "" : "hidden")">Cancel Reserve Slot</button>
                                                 </div>
                                             </div>
                                             <div class="clearfix"></div>
@@ -64,7 +72,7 @@
                 </div>
                 <div class="modal-body">
                     Because this is not a Steam game, we can't automatically get your player name. Please provide the name you use for this game.
-                    <input id="reserveOrPlayer" type="hidden" />
+                    <input id="isPlayerBooking" type="hidden" />
                     <input id="timeSlotId" type="hidden" />
                     <input id="nonSteamName" type="text" onKeyDown="if (event.keyCode == 13) ValidateNonSteamName(); else ClearNonSteamNameValidation();" />
                     <span id="nonSteamNameValidation" style="display:none" class="field-validation-error text-danger">Invalid name</span>
@@ -78,40 +86,144 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="playerBookedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Success!
+                </div>
+                <div class="modal-body">
+                    Your time slot has been booked. Please familiarise yourself with the rules and pregame prep, as failure to do so will forfeit your booking.
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Yay!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reserveBookedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Success!
+                </div>
+                <div class="modal-body">
+                    You have been added to the reserve list for this game. Please familiarise yourself with the rules and pregame prep, as failure to do so will forfeit your booking.
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Yay!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="playerCancelledModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Success!
+                </div>
+                <div class="modal-body">
+                    Your booking has been cancelled. 
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reserveCancelledModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Success!
+                </div>
+                <div class="modal-body">
+                    You have been removed from this time slot's reserves.
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="bookingErrorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Oh dear!
+                </div>
+                <div class="modal-body">
+                    <span id="bookingErrorText"></span>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 <script type="text/javascript">
     $(document).ready(function () {
+        var form = $("#Rosters");
         var url = new URL(window.location.href);
-
-        var parameter = url.searchParams.get("modal");
-        if (parameter != null) {
-            if (parameter.toLowerCase() == "playerbookingsuccess") {
-                
+        var modalParam = url.searchParams.get("modal");
+        var minParam = url.searchParams.get("minimized");
+        if (minParam != null) {
+            form.find('#minimized')[0].value = minParam;
+            var rosters = @Html.Raw(Json.Encode(Model));
+            for (var i = 0; i < rosters.length; i++) {
+                if (minParam.includes(rosters[i].RosterId)) {
+                    form.find('#roster' + i + 'timeslots')[0].style.display = "none";
+                    var toggleButton = form.find('#toggleButton' + i);
+                    toggleButton[0].classList.remove('glyphicon-minus');
+                    toggleButton[0].classList.add('glyphicon-plus');
+                }
             }
-            if (parameter.toLowerCase() == "playercancellationsuccess") {
-
-            }
-            if (parameter.toLowerCase() == "reservebookingsuccess") {
-
-            }
-            if (parameter.toLowerCase() == "reservecancellationsuccess") {
-
-            }
-
         }
+
+
         window.history.replaceState({}, document.title, "/");
+        var form = $("#Rosters");
+        if (modalParam != null) {
+            if (modalParam.toLowerCase() == "playerbookingsuccess") {
+                form.find('#playerBookedModal').modal('show');
+            }
+            if (modalParam.toLowerCase() == "playercancellationsuccess") {
+                form.find('#playerCancelledModal').modal('show');
+            }
+            if (modalParam.toLowerCase() == "reservebookingsuccess") {
+                form.find('#reserveBookedModal').modal('show');
+            }
+            if (modalParam.toLowerCase() == "reservecancellationsuccess") {
+                form.find('#reserveCancelledModal').modal('show');
+            }
+        }
     });
 
-    function DisplayNonSteamNameModalIfNeeded(timeSlotId, isSteamGame, canBookingBeMade) {
+    function DisplayNonSteamNameModalIfNeeded(timeSlotId, isSteamGame, canBookingBeMade, isPlayerBooking) {
         var form = $("#Rosters");
         if (canBookingBeMade.toLowerCase() == 'true') {
             form.find('#timeSlotId')[0].value = timeSlotId;
+            form.find('#isPlayerBooking')[0].value = isPlayerBooking;
             if (isSteamGame.toLowerCase() == 'true')
-                AttemptPlayerBooking();
+                if (isPlayerBooking.toLowerCase() == 'true')
+                    AttemptPlayerBooking();
+                else
+                    AttemptReserveBooking();
             else
                 form.find('#nonSteamNameModal').modal('show');
-        }      
+        }
     }
 
     function ClearNonSteamNameValidation() {
@@ -122,11 +234,15 @@
     function ValidateNonSteamName() {
         var form = $("#Rosters");
         var timeSlotId = form.find('#timeSlotId')[0].value;
+        var isPlayerBooking = form.find('#isPlayerBooking')[0].value;
         var nonSteamName = form.find('#nonSteamName')[0].value;
 
         if (/\S/.test(nonSteamName)) {
             form.find('#nonSteamNameModal').modal('hide');
-            AttemptPlayerBooking();
+            if (isPlayerBooking.toLowerCase() == 'true')
+                AttemptPlayerBooking();
+            else
+                AttemptReserveBooking();
         }
         else {
             form.find('#nonSteamNameValidation').show();
@@ -148,14 +264,50 @@
             },
             success: function (response) {
                 if (response.toLowerCase() == "success") {
-                    window.history.replaceState({}, document.title, "/?modal=playerbookingsuccess");
+                    var minimized = form.find('#minimized')[0].value;
+                    var minParam = "";
+                    if (minimized.length > 0)
+                        minParam = "&minimized=" + minimized;
+                    window.history.replaceState({}, document.title, "/?modal=playerbookingsuccess" + minParam);
                     location.reload();
                 }
                 else {
-                    //Display error modal
+                    form.find('#bookingErrorText')[0].textContent = response;
+                    form.find('#bookingErrorModal').modal('show');
                 }
             }
-            
+
+        });
+    }
+
+    function AttemptReserveBooking() {
+        var form = $("#Rosters");
+        var timeSlotId = form.find('#timeSlotId')[0].value;
+        var nonSteamName = form.find('#nonSteamName')[0].value;
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        $.ajax({
+            url: '@Url.Action("AttemptReserveBooking", "Booking")',
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: token,
+                timeSlotId: timeSlotId,
+                nonSteamName: nonSteamName,
+            },
+            success: function (response) {
+                if (response.toLowerCase() == "success") {
+                    var minimized = form.find('#minimized')[0].value;
+                    var minParam = "";
+                    if (minimized.length > 0)
+                        minParam = "&minimized=" + minimized;
+                    window.history.replaceState({}, document.title, "/?modal=reservebookingsuccess" + minParam);
+                    location.reload();
+                }
+                else {
+                    form.find('#bookingErrorText')[0].textContent = response;
+                    form.find('#bookingErrorModal').modal('show');
+                }
+            }
+
         });
     }
 
@@ -171,17 +323,68 @@
             },
             success: function (response) {
                 if (response.toLowerCase() == "success") {
+                    var minimized = form.find('#minimized')[0].value;
+                    var minParam = "";
+                    if (minimized.length > 0)
+                        minParam = "&minimized=" + minimized;
+                    window.history.replaceState({}, document.title, "/?modal=playercancellationsuccess" + minParam);
                     location.reload();
-                    //Success Action & update page
                 }
                 else {
-                    //Display error modal
+                    form.find('#bookingErrorText')[0].textContent = response;
+                    form.find('#bookingErrorModal').modal('show');
                 }
             }
         });
     }
 
-    </script>
+    function CancelReserveBooking(timeSlotId) {
+        var form = $("#Rosters");
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        $.ajax({
+            url: '@Url.Action("CancelReserveBooking", "Booking")',
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: token,
+                timeSlotId: timeSlotId,
+            },
+            success: function (response) {
+                if (response.toLowerCase() == "success") {
+                    var minimized = form.find('#minimized')[0].value;
+                    var minParam = "";
+                    if (minimized.length > 0)
+                        minParam = "&minimized=" + minimized;
+                    window.history.replaceState({}, document.title, "/?modal=reservecancellationsuccess" + minParam);
+                    location.reload();
+                }
+                else {
+                    form.find('#bookingErrorText')[0].textContent = response;
+                    form.find('#bookingErrorModal').modal('show');
+                }
+            }
+        });
+    }
+
+    function ToggleDisplayRosterTimeSlots(i, rosterId) {
+        var form = $("#Rosters");
+        var timeSlot = form.find('#roster' + i + 'timeslots');
+        var toggleButton = form.find('#toggleButton' + i);
+        timeSlot.slideToggle(500, function () {
+            var minimized = form.find('#minimized')[0];
+            if (timeSlot[0].style.display == "none") {
+                minimized.value = minimized.value + rosterId + "|";
+                toggleButton[0].classList.remove('glyphicon-minus');
+                toggleButton[0].classList.add('glyphicon-plus');
+            }
+            else {
+                minimized.value = minimized.value.replace(rosterId + "|", "");
+                toggleButton[0].classList.remove('glyphicon-plus');
+                toggleButton[0].classList.add('glyphicon-minus');
+            }
+        });
+    }
+
+</script>
 
 
 

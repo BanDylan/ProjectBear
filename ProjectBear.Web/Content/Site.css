@@ -41,7 +41,7 @@ textarea {
     background-color: #3ba53f;
     border: none;
     outline: none;
-    width: 144px;
+    width: 160px;
 }
 
 .btn-cancel,
@@ -50,7 +50,7 @@ textarea {
     background-color: #cc3737;
     border: none;
     outline: none;
-    width: 144px;
+    width: 160px;
 }
 
 .btn-disabled,
@@ -59,7 +59,16 @@ textarea {
     background-color: #888888;
     border: none;
     outline: none;
-    width: 144px;
+    width: 160px;
+}
+
+.btn-toggle,
+.btn-toggle:focus
+.btn-toggle:active{
+    color: #000000;
+    background-color: rgba(0,0,0,0);
+    border: none;
+    outline: none;
 }
 
 button[type="button"]::-moz-focus-inner {
@@ -69,4 +78,31 @@ button[type="button"]::-moz-focus-inner {
 .modal {
     outline: none;
     overflow:hidden;
+}
+
+.buttontooltip {
+    position: relative;
+}
+
+.buttontooltip .tooltiptext {
+    width: 200px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 105%;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    font-size: small;
+    line-height:1
+}
+
+.buttontooltip:hover .tooltiptext {
+    visibility: visible;
 }
