@@ -8,12 +8,14 @@ namespace ProjectBear.Web.Models
 {
     public class RosterViewModel
     {
+        ProjectBearDataContext db = new ProjectBearDataContext();
+
         public RosterViewModel()
         {
             TimeSlots = new List<TimeSlotViewModel>();
         }
 
-        public RosterViewModel(Roster roster, Guid? currentUserProfileId = null)
+        public RosterViewModel(Roster roster, Guid? currentUserProfileId = null, bool onlyShowCurrentUserBookings = false)
         {
             TimeSlots = new List<TimeSlotViewModel>();
             RosterId = roster.RosterId;
@@ -21,7 +23,13 @@ namespace ProjectBear.Web.Models
 
             foreach(var timeSlot in roster.TimeSlots.OrderBy(x => x.Offset))
             {
-                TimeSlots.Add(new TimeSlotViewModel(timeSlot, Date, currentUserProfileId));
+                if(onlyShowCurrentUserBookings && currentUserProfileId.HasValue)
+                {
+                    if (db.PlayersInTimeSlot.Any(x => x.TimeSlotId == timeSlot.TimeSlotId && x.ProfileId == currentUserProfileId) || db.ReservesInTimeSlot.Any(x => x.TimeSlotId == timeSlot.TimeSlotId && x.ProfileId == currentUserProfileId))
+                        TimeSlots.Add(new TimeSlotViewModel(timeSlot, Date, currentUserProfileId));
+                }
+                else 
+                    TimeSlots.Add(new TimeSlotViewModel(timeSlot, Date, currentUserProfileId));
             }
         }
 

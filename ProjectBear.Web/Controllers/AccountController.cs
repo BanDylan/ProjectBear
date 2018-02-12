@@ -52,6 +52,13 @@ namespace ProjectBear.Web.Controllers
             }
         }
 
+
+        [HttpGet]
+        public ActionResult MyAccount()
+        {
+            return View();
+        }
+
         //
         // POST: /Account/ExternalLogin
         //[HttpPost]
@@ -59,9 +66,7 @@ namespace ProjectBear.Web.Controllers
         //[ValidateAntiForgeryToken]
         public ActionResult ExternalLogin()//string provider, string returnUrl)
         {
-
             return new ChallengeResult("Steam", Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = "" }));
-            //return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
         // GET: /Account/ExternalLoginCallback
@@ -92,7 +97,7 @@ namespace ProjectBear.Web.Controllers
                     // If the user does not have an account, then prompt the user to create an account
                     ViewBag.ReturnUrl = returnUrl;
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel() { Username = loginInfo?.DefaultUserName ?? "" } );
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel());
             }
         }
 
@@ -159,7 +164,6 @@ namespace ProjectBear.Web.Controllers
                         return RedirectToAction("Rosters", "Booking");
                     }
                 }
-                AddErrors(new IdentityResult(result.Errors.Where(x => !(x.Contains("Name") && x.Contains("is already taken.")))));
             }
 
             ViewBag.ReturnUrl = returnUrl;

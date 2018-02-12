@@ -5,35 +5,75 @@
 @using (Html.BeginForm("ExternalLoginConfirmation", "Account"))
 {
     @Html.AntiForgeryToken()
-    <div class="container bgwhite softshadow">
-        <div class="pad30">
-            <div class="row">
-                <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-12 col-sm-offset-0">
-                    <h2 class="text-center margintop0 marginbottom60"></h2>
-                    <div class="row marginbottom30">
-                        <div class="col-sm-12 text-center">
-                            <div class="thumb"><img src="~/html/img/email.svg" alt="" /></div>
-                            <div class="marginbottom30">
-                                Choose a username<br><br>
-                            </div>
-                            <form class="margintop30" data-toggle="validator">
-                                <div class="group ">
-                                    @Html.TextBoxFor(m => m.Username)
-                                    <span class="highlight"></span> <span class="bar"></span>
-                                    @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
-                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                                    <label>Username</label>
-                                </div>
-                                <div class="signupBtnHolder">
-                                    <button type="submit" class="btn btn-primary ">Confirm</button>
-                                </div>
-                                <div class="clearfix"></div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div>
+    <h2 style="margin-bottom:10px">Pre-game setup instructions</h2>
+
+    <span style="font-size:18px; margin-bottom:20px; display: inline-block">Before you account is created, please take a moment to read through the pre-game setup. This allows us to get into games without delays. If you have not completed the steps in this setup, your booking will be cancelled and given to someone else.</span>
+
+    <div class="rule_container">
+        <label class="setup_step" >Step 1: Book your game</label>
+        <br />
+        <span class="setup_instruction">After signing in, you will be given access to the rosters, where you can book a time slot. You may book one time slot per evening for a guarenteed game. You may also book as a reserve for a time slot. If there is still space when the stream starts, or someone doesn't show up, you might be given a spot. (This is done automatically in such a way to allow as many people to play as possible).</span>
+        <br/>
+        <span class="setup_instruction">Please note that by booking as either a player or a reserve, you are committing to being ready for your time slot. If you fail to show up too many times, your account will be banned.</span>
     </div>
+
+    <div class="rule_container">
+        <label class="setup_step" >Step 2: Add me on steam</label>
+        <br />
+        <span class="setup_instruction">Please add me (Jowybear) on Steam. Bear in mind that I only accept invites when it's your turn to play, and I may need to unfriend you to make space for someone else. If you have already played with me, please double check before your game that we are still friends on Steam.</span>
+    </div>
+
+    <div class="rule_container">
+        <label class="setup_step">Step 3: Setup Teamspeak</label>
+        <br />
+        <span class="setup_instruction">We use Teamspeak to chat to each other. If you don't already have it, you can <a target="_blank" href="https://www.teamspeak.com/en/downloads">download it here.</a></span>
+        <br />
+        <br />
+        <span class="setup_instruction">To access my server, use the following details:</span>
+        <br />
+        <span class="setup_instruction">Server name: </span>
+        <br />
+        <br />
+        <span class="setup_instruction">Before your game, please make sure your Teamspeak name is set to the same name you booked under. Steam games are automatically booked using your current Steam name, while you specify your user name for non-Steam games. Please make sure your Teamspeak name matches your booking name, otherwise I can't find you.</span>
+        <br />
+        <br />
+        <span class="setup_instruction">Once you enter the channel, hang around until it's your turn to play. I will move you to the hidden in-game channel when ready.</span>
+    </div>
+
+    <div class="rule_container">
+        <label class="setup_step" >Step 4: Check Updates</label>
+        <br />
+        <span class="setup_instruction">Please make sure that both your game, and Teamspeak client are up to date. Please check this well enough before your game, as I cannot delay while people update.</span>
+
+    </div>
+
+
+
+
+    <form data-toggle="validator">
+
+        <iframe width="560"
+                height="315"
+                src="https://www.youtube.com/embed/cMD38HhcdVw"
+                frameborder="0"
+                allowfullscreen></iframe>
+
+
+        <div style="margin-bottom:20px">
+            <label>I have read and understand the rules</label>
+            @Html.CheckBoxFor(m => m.RulesAccepted, new { style = "position: relative; top:2px; left:3px" })
+            <br />
+            @Html.ValidationMessageFor(m => m.RulesAccepted, "", new { @class = "text-danger" })
+
+        </div>
+
+
+        <div class="signupBtnHolder">
+            <button type="submit" class="btn btn-primary ">Create my profile</button>
+        </div>
+        <div class="clearfix"></div>
+    </form>
+</div>
 }
 

@@ -75,6 +75,31 @@ namespace ProjectBear.Web.Controllers
             return View(rosters);
         }
 
+        [HttpGet]
+        public ActionResult MyBookings()
+        {
+            if (UserProfileId().HasValue)
+            {
+                var profileId = UserProfileId().Value;
+                List<RosterViewModel> rosters = new List<RosterViewModel>();
+                var dbRosters = db.Roster.Where(x => x.IsPublished).ToList();
+                dbRosters = dbRosters.Where(x => x.Date > (DateTime.Now).AddDays(-1.0)).OrderBy(x => x.Date).ToList();
+
+                foreach (var dbRoster in dbRosters)
+                {
+                    var roster = new RosterViewModel(dbRoster, UserProfileId(), true);
+                    if(roster.TimeSlots.Count > 0)
+                        rosters.Add(roster);
+                }
+
+                return View(rosters);
+            }
+            else
+            {
+                return RedirectToAction("Rosters", "Booking");
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public string AttemptPlayerBooking(Guid timeSlotId, string nonSteamName)

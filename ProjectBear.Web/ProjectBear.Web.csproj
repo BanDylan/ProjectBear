@@ -414,6 +414,7 @@
     <Content Include="Views\Booking\Rosters.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
+    <Content Include="Views\Booking\MyBookings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

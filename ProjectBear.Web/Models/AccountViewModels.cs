@@ -13,8 +13,11 @@ namespace ProjectBear.Web.Models
 
     public class ExternalLoginConfirmationViewModel
     {
+        public bool isTrue => true;
+
         [Required]
-        [Display(Name = "Username")]
-        public string Username { get; set; }
+        [Display(Name = "I have read and understand the rules")]
+        [Compare("isTrue", ErrorMessage = "Please confirm that you have read the rules.")]
+        public bool RulesAccepted { get; set; }
     }
 }

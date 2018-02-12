@@ -106,3 +106,26 @@ button[type="button"]::-moz-focus-inner {
 .buttontooltip:hover .tooltiptext {
     visibility: visible;
 }
+
+
+.rule_container {
+    padding: 20px;
+    margin-bottom: 10px;
+    color: inherit;
+    background-color: #eeeeee;
+    border-radius: 6px;
+}
+
+.setup_step {
+    line-height: 1.5;
+    font-size: 21px;
+    font-weight:200;
+    display: inline-block
+}
+
+.setup_instruction {
+    line-height:1.5;
+    font-size:15px;
+    display:inline-block;
+    text-align:justify;
+}
