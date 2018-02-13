@@ -80,6 +80,14 @@
     <Compile Include="Migrations\201802080808577_SwappedSteamNameToNonSteamNameRemovedTwitchNameFromBookings.Designer.cs">
       <DependentUpon>201802080808577_SwappedSteamNameToNonSteamNameRemovedTwitchNameFromBookings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802131015091_AddedDidNotPitchToPlayerInTimeSlot.cs" />
+    <Compile Include="Migrations\201802131015091_AddedDidNotPitchToPlayerInTimeSlot.Designer.cs">
+      <DependentUpon>201802131015091_AddedDidNotPitchToPlayerInTimeSlot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802131027313_AddedPromotedFromReserveToPlayerInTimeSlot.cs" />
+    <Compile Include="Migrations\201802131027313_AddedPromotedFromReserveToPlayerInTimeSlot.Designer.cs">
+      <DependentUpon>201802131027313_AddedPromotedFromReserveToPlayerInTimeSlot.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ProfileSteamName.cs" />
     <Compile Include="ReserveInTimeSlot.cs" />
@@ -111,6 +119,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802080808577_SwappedSteamNameToNonSteamNameRemovedTwitchNameFromBookings.resx">
       <DependentUpon>201802080808577_SwappedSteamNameToNonSteamNameRemovedTwitchNameFromBookings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802131015091_AddedDidNotPitchToPlayerInTimeSlot.resx">
+      <DependentUpon>201802131015091_AddedDidNotPitchToPlayerInTimeSlot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802131027313_AddedPromotedFromReserveToPlayerInTimeSlot.resx">
+      <DependentUpon>201802131027313_AddedPromotedFromReserveToPlayerInTimeSlot.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

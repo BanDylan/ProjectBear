@@ -21,6 +21,12 @@ namespace ProjectBear.Data
         [Required]
         public DateTime SignUpTime { get; set; }
 
+        [Required]
+        public bool DidNotPitch { get; set; } = false;
+
+        [Required]
+        public bool PromotedFromReserve { get; set; } = false;
+
         [ForeignKey("ProfileId")]
         public virtual Profile Profile { get; set; }
         [ForeignKey("TimeSlotId")]

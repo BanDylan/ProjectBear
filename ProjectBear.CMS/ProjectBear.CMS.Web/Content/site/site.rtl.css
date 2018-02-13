@@ -1226,7 +1226,7 @@ a.quick-search-field {
 
 /*site.css*/
 .content-wrapper, .right-side, .main-footer {
-    margin-right: 230px;
+    margin-right: 270px;
     margin-left: 0 !important;
 }
 
@@ -1251,7 +1251,7 @@ a.quick-search-field {
 }
 
 .main-header > .navbar {
-    margin-right: 230px;
+    margin-right: 270px;
     margin-left: 0;
 }
 
@@ -1351,7 +1351,7 @@ a.quick-search-field {
 }
 
 .control-sidebar-bg, .control-sidebar {
-    left: -230px;
+    left: -270px;
     right: auto;
 }
 
@@ -2539,7 +2539,7 @@ a.quick-search-field {
     }
 
     .control-sidebar-open .content-wrapper, .control-sidebar-open .right-side, .control-sidebar-open .main-footer {
-        margin-left: 230px;
+        margin-left: 270px;
     }
 
     .skin-blue-light.sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
@@ -2629,22 +2629,22 @@ a.quick-search-field {
 @media (max-width: 767px) {
     .main-sidebar,
     .left-side {
-        -webkit-transform: translate(230px, 0);
-        -ms-transform: translate(230px, 0);
-        -o-transform: translate(230px, 0);
-        -moz-transform: translate(230px, 0);
-        transform: translate(230px, 0);
+        -webkit-transform: translate(270px, 0);
+        -ms-transform: translate(270px, 0);
+        -o-transform: translate(270px, 0);
+        -moz-transform: translate(270px, 0);
+        transform: translate(270px, 0);
     }
 }
 
 @media (min-width: 768px) {
     .sidebar-collapse .main-sidebar,
     .sidebar-collapse .left-side {
-        -webkit-transform: translate(230px, 0);
-        -ms-transform: translate(230px, 0);
-        -o-transform: translate(230px, 0);
-        -moz-transform: translate(230px, 0);
-        transform: translate(230px, 0);
+        -webkit-transform: translate(270px, 0);
+        -ms-transform: translate(270px, 0);
+        -o-transform: translate(270px, 0);
+        -moz-transform: translate(270px, 0);
+        transform: translate(270px, 0);
     }
 }
 

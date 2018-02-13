@@ -9,8 +9,6 @@
 {
     <h4>Roster Management</h4>
     <hr />
-    @Html.ActionLink("Add", "Add", "RosterManagement", null, new { @class = "btn btn-primary" })
-    <br />
     <div class="row">
         <div class="col-md-8 col-sm-12">
             <label class="selectLabel">Template</label>
@@ -28,6 +26,7 @@
                 }
 
             </select>
+            @Html.ActionLink("Add", "Add", "RosterManagement", null, new { @class = "btn btn-primary" })
         </div>
     </div>
     <div class="row">

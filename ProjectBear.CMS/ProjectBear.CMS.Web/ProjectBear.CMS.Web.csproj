@@ -1227,6 +1227,8 @@
     <Content Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementForm.cshtml" />
     <Content Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementIndex.cshtml" />
     <Content Include="Scripts\datetimepicker-master.zip" />
+    <Content Include="Modules\Content\PlayerManagement\PlayerManagementForm.cshtml" />
+    <Content Include="Modules\Content\PlayerManagement\PlayerManagementIndex.cshtml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -1604,9 +1606,14 @@
     <Compile Include="Modules\Common\Navigation\NavigationModel.cs" />
     <Compile Include="Modules\Common\Reporting\DynamicDataReport.cs" />
     <Compile Include="Modules\Common\Reporting\ExcelReportGenerator.cs" />
+    <Compile Include="Modules\Content\PlayerManagement\PlayerManagementEndpoint.cs" />
+    <Compile Include="Modules\Content\PlayerManagement\PlayerManagementPage.cs" />
     <Compile Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementEndpoint.cs" />
     <Compile Include="Modules\Content\RosterTemplateManagement\RosterTemplateManagementPage.cs" />
+    <Compile Include="ViewModels\PlayerBookingViewModel.cs" />
+    <Compile Include="ViewModels\PlayerNameViewModel.cs" />
     <Compile Include="ViewModels\RosterManagementIndexViewModel.cs" />
+    <Compile Include="ViewModels\PlayerViewModel.cs" />
     <Compile Include="ViewModels\RosterTemplateManagementViewModel.cs" />
     <Compile Include="ViewModels\RosterManagementViewModel.cs" />
     <Content Include="Modules\Common\Reporting\ReportPage.cshtml" />

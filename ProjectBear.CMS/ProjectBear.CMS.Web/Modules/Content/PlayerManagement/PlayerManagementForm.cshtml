@@ -1,0 +1,70 @@
+﻿@model ProjectBear.CMS.ViewModels.PlayerViewModel
+
+<div>
+    <div class="form-horizontal">
+        <h2 class="margintop40">Player Management</h2>
+        <hr />
+    </div>
+
+    <h4>Current Steam Name: @Model.CurrentSteamName</h4>
+    <br/>
+    <h4>Player Names:</h4>
+    <div>
+        <table class="table bordered">
+
+            @for (int i = 0; i < Math.Ceiling((decimal)Model.PlayerNames.Count / 4); i++)
+            {
+                <tr>
+                    @for (int j = 0; j < 4; j++)
+                    {
+                        if (((i * 4) + j) < Model.PlayerNames.Count)
+                        {
+                            <td>@Model.PlayerNames[(i * 4) + j].Name</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                    }
+                </tr>
+            }
+
+        </table>
+    </div>
+
+    <h4>Player Bookings:</h4>
+    <div>
+        @if (Model.GameBookings.Count == 0)
+        {
+            <Label>Player has never had a booking</Label>
+        }
+        else
+        {
+            <table class="table bordered">
+                <tr>
+
+                    <th>Timeslot Date</th>
+                    <th>Name Used</th>
+                    <th>Game Name</th>
+                    <th>Did Not Pitch (@(Model.GameBookings.Count(x => x.DidNotPitch)))</th>
+                </tr>
+
+                @foreach (var booking in Model.GameBookings)
+                {
+                    <tr>
+                        <td>@booking.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@booking.PlayerName</td>
+                        <td>@booking.Game</td>
+                        <td>@booking.DidNotPitch</td>
+                    </tr>
+                }
+            </table>
+        }
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+</script>

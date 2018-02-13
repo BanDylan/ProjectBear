@@ -1,0 +1,40 @@
+﻿@model List<ProjectBear.CMS.ViewModels.PlayerViewModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Player Management</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8 col-sm-12">
+        @using (Html.BeginForm("Index", "PlayerManagement"))
+        {
+            <label class="selectLabel">Player Name</label>
+            <input id="filter" name="name" type="text" />
+            <input type="submit" id="Search" value="Search" />
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8 col-sm-12">
+        <table class="table table bordered">
+            <tr>
+                <th>Name</th>
+                <th>Last Updated</th>
+                <th colspan="2"></th>
+            </tr>
+            @foreach (var player in Model)
+            {
+            <tr>
+                <td>@(player.MatchingPlayerName == "" ? player.CurrentSteamName : player.MatchingPlayerName)</td>
+                <td>@player.LastPlayed</td>
+                <td>@Html.ActionLink("View", "ViewPlayer", "PlayerManagement", new { id = player.PlayerProfile.ProfileId }, null)</td>
+            </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+</script>

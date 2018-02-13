@@ -29,7 +29,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
 
         #region Index
 
-        [HttpGet, PageAuthorize("Administration"), Route("Index")]
+        [HttpGet, PageAuthorize("Administration")]
         public ActionResult Index()
         {
             var templates = db.RosterTemplate.ToList();
