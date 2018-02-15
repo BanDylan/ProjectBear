@@ -40,6 +40,7 @@ namespace ProjectBear.Web.Models
 
             BookPlayerCheck();
             BookReserveCheck();
+            CancelPlayerCheck();
         }
 
         public Guid TimeSlotId { get; set; }
@@ -59,8 +60,10 @@ namespace ProjectBear.Web.Models
 
         public bool CanBookPlayer { get; set; }
         public bool CanBookReserve { get; set; }
+        public bool CanCancelPlayer { get; set; }
         public string DenyPlayerBookReason { get; set; }
         public string DenyReserveBookReason { get; set; }
+        public string DenyCancelPlayerReason { get; set; }
 
 
         private void BookPlayerCheck ()
@@ -124,6 +127,25 @@ namespace ProjectBear.Web.Models
                 DenyReserveBookReason = "You must be signed in to make a booking.";
 
             CanBookReserve = false;
+        }
+
+        private void CancelPlayerCheck()
+        {
+            if (_currentUserProfileId != null)
+            {
+                if (StartTime >= DateTime.Now)
+                {
+                    DenyCancelPlayerReason = "";
+                    CanCancelPlayer = true;
+                    return;
+                }
+                else
+                    DenyCancelPlayerReason = "This time slot has already started.";               
+            }
+            else
+                DenyCancelPlayerReason = "You must be signed in to make a booking.";
+
+            CanCancelPlayer = false;
         }
     }
 }

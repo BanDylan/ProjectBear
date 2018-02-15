@@ -44,7 +44,7 @@
                     <td>@(roster.IsPublished ? "Published" : "Hidden")</td>
 
 
-                    <td>@Html.ActionLink("Edit", "Edit", "RosterManagement", new { id = roster.RosterId }, null)</td>
+                    <td>@if (!roster.IsPublished) { @Html.ActionLink("Edit", "Edit", "RosterManagement", new { id = roster.RosterId }, null) }</td>
                     
                     <td>@if (!roster.IsPublished) { @Html.ActionLink("Publish", "Publish", "RosterManagement", (object)new { id = roster.RosterId }, null) }</td>
                     

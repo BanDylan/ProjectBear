@@ -191,7 +191,6 @@
     }
 
     function SetTimeSlotNumberOfPlayers(i) {
-        debugger;
         var value = $('#RosterTemplateForm').find('#NumberOfPlayers' + i)[0].value;
         $.ajax({
             url: '@Url.Action("SetTimeSlotPlayerCount", "RosterTemplateManagement")',

@@ -21,14 +21,12 @@ namespace ProjectBear.Data
         public string AspUserId { get; set; }
 
         [Required]
-        public int Strikes { get; set; } = 0;
-
-        [Required]
         public bool Banned { get; set; } = false;
 
         public virtual ICollection<PlayerInTimeSlot> PlayerSlots { get; set; }
         public virtual ICollection<ReserveInTimeSlot> ReserveSlots { get; set; }
         public virtual ICollection<ProfileSteamName> ProfileSteamNames { get; set; }
+        public virtual ICollection<ProfileStrike> ProfileStrikes { get; set; }
 
         [ForeignKey("AspUserId")]
         public virtual ApplicationUser AspUser { get; set; }

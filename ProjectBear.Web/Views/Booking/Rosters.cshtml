@@ -40,10 +40,14 @@
                                                         <button type="button" onclick="@string.Format("DisplayNonSteamNameModalIfNeeded(\"{0}\", \"{1}\", \"{2}\", \"{3}\")", Model[i].TimeSlots[j].TimeSlotId, Model[i].TimeSlots[j].IsSteamGame, Model[i].TimeSlots[j].CanBookPlayer, true);" class="btn @(Model[i].TimeSlots[j].CanBookPlayer ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsPlayerBooked ? "hidden" : "")">Book Player Slot</button>
                                                         <span class="tooltiptext">@Model[i].TimeSlots[j].DenyPlayerBookReason</span>
                                                     </div>
-                                                    <button type="button" onclick="@string.Format("CancelPlayerBooking(\"{0}\")", Model[i].TimeSlots[j].TimeSlotId);" class="btn btn-cancel @(Model[i].TimeSlots[j].IsPlayerBooked ? "" : "hidden")">Cancel Player Slot</button>
 
-
+                                                    <div class="@(Model[i].TimeSlots[j].CanCancelPlayer ? "" : "buttontooltip")">
+                                                        <button type="button" onclick="@string.Format("CancelPlayerBooking(\"{0}\")", Model[i].TimeSlots[j].TimeSlotId);" class="btn @(Model[i].TimeSlots[j].CanCancelPlayer ? "btn-cancel" : "btn-disabled") @(Model[i].TimeSlots[j].IsPlayerBooked ? "" : "hidden")">Cancel Player Slot</button>
+                                                        <span class="tooltiptext">@Model[i].TimeSlots[j].DenyCancelPlayerReason</span>
                                                     </div>
+
+
+                                                </div>
                                                 <div id="@string.Format("r{0}ts{1}bookReserveButtons", i, j)">
                                                     <div class="@(Model[i].TimeSlots[j].CanBookReserve ? "" : "buttontooltip")">
                                                         <button type="button" onclick="@string.Format("DisplayNonSteamNameModalIfNeeded(\"{0}\", \"{1}\", \"{2}\", \"{3}\")", Model[i].TimeSlots[j].TimeSlotId, Model[i].TimeSlots[j].IsSteamGame, Model[i].TimeSlots[j].CanBookReserve, false);" class="btn @(Model[i].TimeSlots[j].CanBookReserve ? "btn-book" : "btn-disabled") @(Model[i].TimeSlots[j].IsReserveBooked ? "hidden" : "")">Book Reserve Slot</button>

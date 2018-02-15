@@ -88,7 +88,12 @@
     <Compile Include="Migrations\201802131027313_AddedPromotedFromReserveToPlayerInTimeSlot.Designer.cs">
       <DependentUpon>201802131027313_AddedPromotedFromReserveToPlayerInTimeSlot.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802151135309_RemovedStrikeCounterAndAddedProfileStrikeTable.cs" />
+    <Compile Include="Migrations\201802151135309_RemovedStrikeCounterAndAddedProfileStrikeTable.Designer.cs">
+      <DependentUpon>201802151135309_RemovedStrikeCounterAndAddedProfileStrikeTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="ProfileStrike.cs" />
     <Compile Include="ProfileSteamName.cs" />
     <Compile Include="ReserveInTimeSlot.cs" />
     <Compile Include="Profile.cs" />
@@ -125,6 +130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802131027313_AddedPromotedFromReserveToPlayerInTimeSlot.resx">
       <DependentUpon>201802131027313_AddedPromotedFromReserveToPlayerInTimeSlot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802151135309_RemovedStrikeCounterAndAddedProfileStrikeTable.resx">
+      <DependentUpon>201802151135309_RemovedStrikeCounterAndAddedProfileStrikeTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

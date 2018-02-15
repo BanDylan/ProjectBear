@@ -11,9 +11,13 @@ namespace ProjectBear.CMS.ViewModels
 
         public string CurrentSteamName { get; set; }
         public string MatchingPlayerName { get; set; }
-        public Profile PlayerProfile { get; set; }
+
+        public Guid ProfileId => PlayerProfile.ProfileId;
+        private Profile PlayerProfile { get; set; }
+        public bool Banned => PlayerProfile.Banned;
         public List<PlayerNameViewModel> PlayerNames { get; set; }
         public List<PlayerBookingViewModel> GameBookings { get; set; }
+        public List<ProfileStrike> Strikes => PlayerProfile.ProfileStrikes.ToList();
 
         //public string LastPlayed => GameBookings?.FirstOrDefault()?.Date.ToString("dd/MM/yyyy HH:mm") ?? "Never booked";
 
@@ -28,6 +32,7 @@ namespace ProjectBear.CMS.ViewModels
 
             if (getFullData)
             {
+
                 var steamNames = db.ProfileSteamName.Where(x => x.ProfileId == profileId);
 
                 foreach (var steamName in steamNames)

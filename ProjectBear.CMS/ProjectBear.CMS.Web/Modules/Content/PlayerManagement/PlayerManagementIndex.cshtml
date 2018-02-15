@@ -26,7 +26,7 @@
             {
             <tr>
                 <td>@(player.MatchingPlayerName == "" ? player.CurrentSteamName : player.MatchingPlayerName)</td>
-                <td>@Html.ActionLink("View", "ViewPlayer", "PlayerManagement", new { id = player.PlayerProfile.ProfileId }, null)</td>
+                <td>@Html.ActionLink("View", "ViewPlayer", "PlayerManagement", new { id = player.ProfileId }, null)</td>
             </tr>
             }
         </table>

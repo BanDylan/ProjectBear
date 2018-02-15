@@ -18,6 +18,8 @@ namespace ProjectBear.Data
 
 
         public virtual DbSet<Profile> Profile { get; set; }
+        public virtual DbSet<ProfileStrike> ProfileStrike { get; set; }
+
         public virtual DbSet<ProfileSteamName> ProfileSteamName { get; set; }
 
         public virtual DbSet<Roster> Roster { get; set; }

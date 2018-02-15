@@ -1,86 +1,117 @@
 ﻿@model ProjectBear.CMS.ViewModels.PlayerViewModel
 
 <div>
-    <div class="form-horizontal">
-        <h2 class="margintop40">Player Management</h2>
-        <hr />
-    </div>
-    <div style="display:inline">
-        @using (Ajax.BeginForm("ManagePlayer", "PlayerManagement", null, new AjaxOptions { }, new { id = "Player" }))
-        {
-
+    @using (Ajax.BeginForm("ManagePlayer", "PlayerManagement", null, new AjaxOptions { }, new { id = "Player" }))
+    {
+        <div class="form-horizontal">
+            <h2 class="margintop40">Player Management</h2>
+            <hr />
+        </div>
+        <div style="display:inline">
             <div>
                 <h4>Current Steam Name: @Model.CurrentSteamName</h4>
-                <h4 id="strikeCount">Strikes: @Model.PlayerProfile.Strikes</h4>
-                <h4 id="status">Status: @(Model.PlayerProfile.Banned ? "Banned" : "Active")</h4>
+                <h4 id="status">Status: @(Model.Banned ? "Banned" : "Active")</h4>
+                <h4 id="strikeCount">Strikes: @Model.Strikes.Count</h4>
             </div>
             <div class="clearfix"></div>
-            <div>
-
-                @Html.AntiForgeryToken()
-                <button id="removeStrike" onclick="@string.Format("RemoveStrike(\"{0}\")", Model.PlayerProfile.ProfileId);" style="margin-right:20px; width:120px" class="btn btn-primary">Remove Strike</button>
-                <button id="addStrike" onclick="@string.Format("AddStrike(\"{0}\")", Model.PlayerProfile.ProfileId);" style="margin-right:20px; width:120px" class="btn btn-primary">Add Strike</button>
-                <button id="banButton" onclick="@string.Format("ToggleBan(\"{0}\")", Model.PlayerProfile.ProfileId);" style="margin-right:20px; width:120px" class="btn btn-primary">@(Model.PlayerProfile.Banned ? "Un-ban" : "Ban")</button>
-            </div>
-
-        }
-    </div>
-    <div class="clearfix"></div>
-    <br />
-    <h4 style="display:inline-block">Player Names:</h4>
-    <div>
-        <table class="table bordered">
-
-            @for (int i = 0; i < Math.Ceiling((decimal)Model.PlayerNames.Count / 4); i++)
-            {
-                <tr>
-                    @for (int j = 0; j < 4; j++)
-                    {
-                        if (((i * 4) + j) < Model.PlayerNames.Count)
-                        {
-                            <td>@Model.PlayerNames[(i * 4) + j].Name</td>
-                        }
-                        else
-                        {
-                            <td></td>
-                        }
-                    }
-                </tr>
-            }
-
-        </table>
-    </div>
-
-    <h4>Player Bookings:</h4>
-    <div>
-        @if (Model.GameBookings.Count == 0)
-        {
-            <Label>Player has never had a booking</Label>
-        }
-        else
-        {
+            
             <table class="table bordered">
                 <tr>
-
-                    <th>Timeslot Date</th>
-                    <th>Name Used</th>
-                    <th>Game Name</th>
-                    <th>Did Not Pitch (@(Model.GameBookings.Count(x => x.DidNotPitch)))</th>
+                    <th></th>
+                    <th>Date Issued</th>
+                    <th width="70%">Reason</th>
                 </tr>
 
-                @foreach (var booking in Model.GameBookings)
+                @for (int i = 0; i < Model.Strikes.Count; i++)
                 {
-                    <tr>
-                        <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.Date.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.PlayerName</td>
-                        <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.Game</td>
-                        <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.DidNotPitch</td>
-                    </tr>
+                <tr>
+                    <td>@Html.ActionLink("Remove", "RemoveStrike", "PlayerManagement", new { profileStrikeId = Model.Strikes[i].ProfileStrikeId }, null)</td>
+                    <td>@Model.Strikes[i].DateIssued.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@Model.Strikes[i].Reason</td>
+                </tr>
                 }
             </table>
-        }
+            <div>
+                @Html.AntiForgeryToken()
+                <button id="addStrike" onclick="@string.Format("DisplayStrikeReasonModal(\"{0}\")", Model.ProfileId);" style="margin-right:20px; width:120px" class="btn btn-primary">Add Strike</button>
+                <button id="banButton" onclick="@string.Format("ToggleBan(\"{0}\")", Model.ProfileId);" style="margin-right:20px; width:120px" class="btn btn-primary">@(Model.Banned ? "Un-ban" : "Ban")</button>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <br />
+        <h4 style="display:inline-block">Player Names:</h4>
+        <div>
+            <table class="table bordered">
+                @for (int i = 0; i < Math.Ceiling((decimal)Model.PlayerNames.Count / 4); i++)
+                {
+                    <tr>
+                        @for (int j = 0; j < 4; j++)
+                        {
+                            if (((i * 4) + j) < Model.PlayerNames.Count)
+                            {
+                                <td width="20%">@Model.PlayerNames[(i * 4) + j].Name</td>
+                            }
+                            else
+                            {
+                                <td width="20%"> </td>
+                            }
+                        }
+                    </tr>
+                }
 
-    </div>
+            </table>
+        </div>
+
+        <h4>Player Bookings:</h4>
+        <div>
+            @if (Model.GameBookings.Count == 0)
+            {
+                <Label>Player has never had a booking</Label>
+            }
+            else
+            {
+                <table class="table bordered">
+                    <tr>
+
+                        <th width="10%">Timeslot Date</th>
+                        <th width="10%">Name Used</th>
+                        <th width="10%">Game Name</th>
+                        <th width="10%">Did Not Pitch (@(Model.GameBookings.Count(x => x.DidNotPitch)))</th>
+                    </tr>
+
+                    @foreach (var booking in Model.GameBookings)
+                    {
+                        <tr>
+                            <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.PlayerName</td>
+                            <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.Game</td>
+                            <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.DidNotPitch</td>
+                        </tr>
+                    }
+                </table>
+            }
+
+        </div>
+
+        <div class="modal fade" id="strikeReasonModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Strike Reason
+                    </div>
+                    <div class="modal-body">
+                        <input id="profileId" type="hidden" />
+                        Please provide a reason for the strike.
+                        <input id="reason" type="text" onKeyDown="if (event.keyCode == 13) ValidateStrikeReason();" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" id="confirmName" onclick="AddStrike();" class="btn btn-book">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 <script type="text/javascript">
@@ -110,37 +141,26 @@
         });
     }
 
-    function RemoveStrike(profileId) {
+    function DisplayStrikeReasonModal(profileId) {
         var form = $("#Player");
-        var token = $('input[name="__RequestVerificationToken"]', form).val();
-        $.ajax({
-            url: '@Url.Action("RemoveStrike", "PlayerManagement")',
-            type: 'POST',
-            data: {
-                __RequestVerificationToken: token,
-                profileId: profileId,
-            },
-            success: function (response) {
-                var strikes = form.find('#strikeCount')[0];
-                strikes.textContent = "Strikes: " + response;
-            }
-        });
+        form.find('#profileId')[0].value = profileId;
+        form.find('#strikeReasonModal').modal('show');
     }
 
-    function AddStrike(profileId) {
+    function AddStrike() {
+        debugger;
         var form = $("#Player");
         var token = $('input[name="__RequestVerificationToken"]', form).val();
+        var profileId = form.find('#profileId')[0].value
+        var reason = form.find('#reason')[0].value;
         $.ajax({
             url: '@Url.Action("AddStrike", "PlayerManagement")',
             type: 'POST',
             data: {
                 __RequestVerificationToken: token,
                 profileId: profileId,
+                reason: reason,
             },
-            success: function (response) {
-                var strikes = form.find('#strikeCount')[0];
-                strikes.textContent = "Strikes: " + response;
-            }
         });
     }
 

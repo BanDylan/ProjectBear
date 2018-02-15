@@ -25,14 +25,14 @@ namespace ProjectBear.CMS.Modules.Content.PlayerManagement
             var steamNameProfiles = db.ProfileSteamName.Where(x => x.SteamName.Contains(name));
             foreach (var profile in steamNameProfiles)
             {
-                if (!playerList.Any(x => x.PlayerProfile.ProfileId == profile.ProfileId))
+                if (!playerList.Any(x => x.ProfileId == profile.ProfileId))
                     playerList.Add(new PlayerViewModel(profile.ProfileId, profile.SteamName, name == ""));
             }
 
             var nonSteamProfiles = db.PlayersInTimeSlot.Where(x => x.NonSteamName.Contains(name));
             foreach (var profile in nonSteamProfiles)
             {
-                if (!playerList.Any(x => x.PlayerProfile.ProfileId == profile.ProfileId))
+                if (!playerList.Any(x => x.ProfileId == profile.ProfileId))
                     playerList.Add(new PlayerViewModel(profile.ProfileId, profile.NonSteamName, name == ""));
             }
 
@@ -79,26 +79,32 @@ namespace ProjectBear.CMS.Modules.Content.PlayerManagement
         [HttpPost]
         [ValidateAntiForgeryToken]
         [PageAuthorize("Administration")]
-        public int RemoveStrike(Guid profileId)
+        public ActionResult AddStrike(Guid profileId, string reason)
         {
-            var profile = db.Profile.FirstOrDefault(x => x.ProfileId == profileId);
-            if (profile.Strikes > 0)
-                profile.Strikes--;
-            db.Entry(profile).State = EntityState.Modified;
+            var strike = new ProfileStrike
+            {
+                ProfileId = profileId,
+                DateIssued = DateTime.Now,
+                Reason = reason,
+            };
+
+            db.ProfileStrike.Add(strike);
             db.SaveChanges();
-            return profile.Strikes;
+
+            var player = db.Profile.FirstOrDefault(x => x.ProfileId == profileId);
+            return View("~/Modules/Content/PlayerManagement/PlayerManagementForm.cshtml", player);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [PageAuthorize("Administration")]
-        public int AddStrike(Guid profileId)
+        public ActionResult RemoveStrike(Guid profileStrikeId)
         {
-            var profile = db.Profile.FirstOrDefault(x => x.ProfileId == profileId);
-            profile.Strikes++;
-            db.Entry(profile).State = EntityState.Modified;
+            var strike = db.ProfileStrike.FirstOrDefault(x => x.ProfileStrikeId == profileStrikeId);
+            var player = strike.Profile;
+            db.Entry(strike).State = EntityState.Deleted;
             db.SaveChanges();
-            return profile.Strikes;
+            return View("~/Modules/Content/PlayerManagement/PlayerManagementForm.cshtml", player);
         }
 
     }

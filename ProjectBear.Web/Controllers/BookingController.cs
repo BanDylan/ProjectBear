@@ -167,9 +167,14 @@ namespace ProjectBear.Web.Controllers
 
                 if (timeSlotBooking != null)
                 {
-                    db.Entry(timeSlotBooking).State = EntityState.Deleted;
-                    db.SaveChanges();
-                    return "success";
+                    if(DateTime.Now >= timeSlot.Roster.Date.AddMinutes(timeSlot.Offset))
+                    {
+                        db.Entry(timeSlotBooking).State = EntityState.Deleted;
+                        db.SaveChanges();
+                        return "success";
+                    }
+                    else
+                        return "This time slot has already started.";
                 }
                 else
                     return "You don't seem to have a booking for this timeslot.";
