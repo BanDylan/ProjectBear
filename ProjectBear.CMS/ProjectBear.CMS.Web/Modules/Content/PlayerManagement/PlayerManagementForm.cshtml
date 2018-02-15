@@ -5,10 +5,29 @@
         <h2 class="margintop40">Player Management</h2>
         <hr />
     </div>
+    <div style="display:inline">
+        @using (Ajax.BeginForm("ManagePlayer", "PlayerManagement", null, new AjaxOptions { }, new { id = "Player" }))
+        {
 
-    <h4>Current Steam Name: @Model.CurrentSteamName</h4>
-    <br/>
-    <h4>Player Names:</h4>
+            <div>
+                <h4>Current Steam Name: @Model.CurrentSteamName</h4>
+                <h4 id="strikeCount">Strikes: @Model.PlayerProfile.Strikes</h4>
+                <h4 id="status">Status: @(Model.PlayerProfile.Banned ? "Banned" : "Active")</h4>
+            </div>
+            <div class="clearfix"></div>
+            <div>
+
+                @Html.AntiForgeryToken()
+                <button id="removeStrike" onclick="@string.Format("RemoveStrike(\"{0}\")", Model.PlayerProfile.ProfileId);" style="margin-right:20px; width:120px" class="btn btn-primary">Remove Strike</button>
+                <button id="addStrike" onclick="@string.Format("AddStrike(\"{0}\")", Model.PlayerProfile.ProfileId);" style="margin-right:20px; width:120px" class="btn btn-primary">Add Strike</button>
+                <button id="banButton" onclick="@string.Format("ToggleBan(\"{0}\")", Model.PlayerProfile.ProfileId);" style="margin-right:20px; width:120px" class="btn btn-primary">@(Model.PlayerProfile.Banned ? "Un-ban" : "Ban")</button>
+            </div>
+
+        }
+    </div>
+    <div class="clearfix"></div>
+    <br />
+    <h4 style="display:inline-block">Player Names:</h4>
     <div>
         <table class="table bordered">
 
@@ -52,10 +71,10 @@
                 @foreach (var booking in Model.GameBookings)
                 {
                     <tr>
-                        <td>@booking.Date.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@booking.PlayerName</td>
-                        <td>@booking.Game</td>
-                        <td>@booking.DidNotPitch</td>
+                        <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.PlayerName</td>
+                        <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.Game</td>
+                        <td style="@(booking.Date > DateTime.Now ? "color: #999999" : "")">@booking.DidNotPitch</td>
                     </tr>
                 }
             </table>
@@ -65,6 +84,64 @@
 </div>
 
 <script type="text/javascript">
+    function ToggleBan(profileId) {
+        var form = $("#Player");
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        $.ajax({
+            url: '@Url.Action("ToggleBan", "PlayerManagement")',
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: token,
+                profileId: profileId,
+            },
+            success: function (response) {
+                var banButton = form.find('#banButton')[0];
+                var status = form.find('#status')[0];
+                if (response.toLowerCase() == 'true') {
+                    banButton.textContent = "Un-ban";
+                    status.textContent = "Status: Banned";
+                }
+                else {
+                    banButton.textContent = "Ban";
+                    status.textContent = "Status: Active";
+                }
 
+            }
+        });
+    }
+
+    function RemoveStrike(profileId) {
+        var form = $("#Player");
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        $.ajax({
+            url: '@Url.Action("RemoveStrike", "PlayerManagement")',
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: token,
+                profileId: profileId,
+            },
+            success: function (response) {
+                var strikes = form.find('#strikeCount')[0];
+                strikes.textContent = "Strikes: " + response;
+            }
+        });
+    }
+
+    function AddStrike(profileId) {
+        var form = $("#Player");
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        $.ajax({
+            url: '@Url.Action("AddStrike", "PlayerManagement")',
+            type: 'POST',
+            data: {
+                __RequestVerificationToken: token,
+                profileId: profileId,
+            },
+            success: function (response) {
+                var strikes = form.find('#strikeCount')[0];
+                strikes.textContent = "Strikes: " + response;
+            }
+        });
+    }
 
 </script>
