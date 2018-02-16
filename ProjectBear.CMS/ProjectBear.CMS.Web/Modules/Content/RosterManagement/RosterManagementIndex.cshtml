@@ -1,17 +1,11 @@
 ﻿@model ProjectBear.CMS.ViewModels.RosterManagementIndexViewModel
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-@using System.Globalization;
 
-
-@using (Ajax.BeginForm("Add", "RosterManagement", null, new AjaxOptions { }, new { id = "RosterForm" }))
-{
-    <h4>Roster Management</h4>
-    <hr />
-    <div class="row">
-        <div class="col-md-8 col-sm-12">
-            <label class="selectLabel">Template</label>
+<h2>Roster Management</h2>
+<hr />
+<div style="margin-bottom:20px">
+        @using (Ajax.BeginForm("Add", "RosterManagement", null, new AjaxOptions { }, new { id = "RosterForm", style = "display:inline" }))
+        {
+            <label class="selectLabel">Template:</label>
             <select id="SelectedTemplate" class="browser-default">
                 @foreach (var template in Model.TemplateList)
                 {
@@ -26,47 +20,126 @@
                 }
 
             </select>
-            @Html.ActionLink("Add", "Add", "RosterManagement", null, new { @class = "btn btn-primary" })
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8 col-sm-12">
-            <table class="table table bordered">
-                <tr>
-                    <th>Starting Date / Time</th>
-                    <th>Published</th>
-                    <th colspan="2"></th>
-                </tr>
-                @foreach (var roster in Model.RosterList)
-                {
+        }
+
+        @using (Html.BeginForm("Add", "RosterManagement", FormMethod.Post, new { style = "display:inline;" }))
+        {
+            <input type="submit" id="Add" value="Create New Roster" />
+        }
+</div>
+<div class="row">
+    <div class="col-md-8 col-sm-12">
+        <table class="table table bordered">
+            <tr>
+                <th width="30%">Starting Date / Time</th>
+                <th width="20%">Status</th>
+                <th width="10%"></th>
+                <th width="10%"></th>
+                <th width="10%"></th>
+                <th width="100%"></th>
+            </tr>
+            @foreach (var roster in Model.RosterList)
+            {
                 <tr>
                     <td>@roster.Date.ToString("dd MMM yyyy HH:mm")</td>
-                    <td>@(roster.IsPublished ? "Published" : "Hidden")</td>
+                    <td style="@((roster.Date <= DateTime.Now && roster.Date.AddMinutes(roster.TimeSlots.Last().Offset) >= DateTime.Now && roster.IsPublished) ? "color: #FF0000" : "" )">@((roster.Date.AddMinutes(roster.TimeSlots.Last().Offset) <= DateTime.Now && roster.IsPublished) ? "Completed" : (roster.Date < DateTime.Now && roster.IsPublished) ? "Live" : roster.IsPublished ? "Published" : "Hidden")</td>
 
 
-                    <td>@if (!roster.IsPublished) { @Html.ActionLink("Edit", "Edit", "RosterManagement", new { id = roster.RosterId }, null) }</td>
-                    
-                    <td>@if (!roster.IsPublished) { @Html.ActionLink("Publish", "Publish", "RosterManagement", (object)new { id = roster.RosterId }, null) }</td>
-                    
-                    <td>@Html.ActionLink("Delete", "Delete", "RosterManagement", new { id = roster.RosterId }, null)</td>
+                    <td>
+                        @if (!roster.IsPublished)
+                        {@Html.ActionLink("Edit", "Edit", "RosterManagement", new { id = roster.RosterId }, null)}
+                    </td>
+
+                    <td>
+                        @if (roster.Date > DateTime.Now && !roster.IsPublished)
+                        {@Html.ActionLink("Publish", "Publish", "RosterManagement", (object)new { id = roster.RosterId }, null)}
+                    </td>
+
+                    <td>
+                        @if (roster.Date > DateTime.Now || !roster.IsPublished)
+                        {
+                            if (!roster.IsPublished)
+                            {@Html.ActionLink("Delete", "Delete", "RosterManagement", new { id = roster.RosterId }, null)}
+                            else
+                            { <a style="cursor: pointer" onclick="@string.Format("DisplayDeleteModal(\"{0}\")", roster.RosterId)">Delete</a>}
+                        }
+                    </td>
+
+                    <td>
+                        @if (roster.IsPublished)
+                        {@Html.ActionLink("View Bookings", "ViewBookings", "RosterManagement", new { id = roster.RosterId }, null)}
+                    </td>
                 </tr>
-                }
-            </table>
-        </div>
+            }
+        </table>
     </div>
 
-    @functions {
-        object GetHtmlAttributes(bool published)
+    @using (Html.BeginForm("Delete", "RosterManagement", FormMethod.Get,  new { id = "DeleteRosterForm", style = "display:inline" }))
+    {
+        <div class="modal fade" id="deleteRosterModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Confirm Roster Delete
+                    </div>
+                    <div class="modal-body">
+                        <input id="rosterId" type="hidden" />
+                        You are about to delete a published roster. Anyone who has made a booking on this roster will have their bookings removed.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="button" id="confirmName" onclick="@string.Format("DeleteRoster()");" class="btn btn-book">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@functions {
+    object GetHtmlAttributes(bool published)
+    {
+        if (published)
         {
-            if (published)
-            {
-                return new { disabled = "disabled" };
-            }
-            return new { };
+            return new { disabled = "disabled" };
         }
+        return new { };
     }
 }
+
 <script type="text/javascript">
+    $(document).ready(function () {
+        UpdateTemplate();
+        window.history.replaceState({}, document.title, "/");
+        $("#RosterForm").find("#SelectedTemplate").bind("change", function () {
+            UpdateTemplate();
+        });
+    })
+
+    function DisplayDeleteModal(rosterId) {
+        var form = $("#DeleteRosterForm");
+        form.find('#rosterId')[0].value = rosterId;
+        form.find('#deleteRosterModal').modal('show');
+    }
+
+    function DeleteRoster() {
+        var form = $("#DeleteRosterForm");
+        var rosterId = form.find('#rosterId')[0].value;
+        form.find('#deleteRosterModal').modal('hide');
+        $.ajax({
+            url: '@Url.Action("DeletePublished", "RosterManagement")',
+            data: {
+                id: rosterId,
+            },
+            type: 'POST',
+            success: function (result) {
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+                $('#update-body').html(result);
+
+            }
+        });
+    }
 
     function UpdateTemplate() {
         var selectedTemplate = $("#RosterForm").find("#SelectedTemplate option:selected");
@@ -80,11 +153,5 @@
         });
     }
 
-    $(document).ready(function () {
-        UpdateTemplate();
 
-        $("#RosterForm").find("#SelectedTemplate").bind("change", function () {
-            UpdateTemplate();
-        });
-    })
 </script>

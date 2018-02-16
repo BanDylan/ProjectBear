@@ -220,13 +220,20 @@
         if (canBookingBeMade.toLowerCase() == 'true') {
             form.find('#timeSlotId')[0].value = timeSlotId;
             form.find('#isPlayerBooking')[0].value = isPlayerBooking;
+            form.find('#nonSteamName').[0].value = "";
+            form.find('#nonSteamNameValidation').hide();
             if (isSteamGame.toLowerCase() == 'true')
                 if (isPlayerBooking.toLowerCase() == 'true')
                     AttemptPlayerBooking();
                 else
                     AttemptReserveBooking();
-            else
+            else {
+                form.find('#nonSteamNameModal').on('shown.bs.modal', function () {  
+                    form.find('#nonSteamName').focus();
+                })
                 form.find('#nonSteamNameModal').modal('show');
+            }
+                
         }
     }
 

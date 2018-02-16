@@ -4,12 +4,13 @@
     @using (Ajax.BeginForm("Roster", "RosterManagement", null, new AjaxOptions { }, new { id = "RosterForm" }))
     {
         //@Html.AntiForgeryToken()
-        <div class="form-horizontal">
-            <h4 class="margintop40">Roster Creation</h4>
-            <hr />
-        </div>
+        <h2 style="margin-bottom:20px">Roster Creation</h2>
 
-        <div class="group" style="margin-bottom:10px">
+        <div style="margin-bottom:10px">
+            <button style="width:120px; margin-right:10px"  type="button" onclick="AddTimeSlot()">Add Time Slot</button>
+            <button style="width:120px;" type="button" onclick="ValidateAndSave(@Model.TimeSlotCount)">Save Roster</button>
+        </div>
+        <div style="margin-bottom:10px">
             <label>Start date</label>
             @Html.TextBoxFor(m => m.Date, "{0:dd/MM/yyyy HH:mm}", new { id = "Date", type = "text", onchange = "SetDate()" })
             <span class="highlight"></span> <span class="bar"></span>
@@ -17,66 +18,54 @@
         </div>
 
 
-        <div class="group">
+        <div>
             @for (int i = 0; i < Model.TimeSlots.Count; i++)
             {
-                <div id="@string.Format("TimeSlot{0}", i)" style="margin-bottom:20px; padding:10px; background-color: #dddddd">
-                    <div class="row">
-                        <div class="col-lg-3 col-sm-12">
-                            <div class="group">
-                                <label>Game</label>
-                                @Html.TextBoxFor(m => m.TimeSlots[i].GameName, new { id = string.Format("GameName{0}", i), type = "text", onblur = string.Format("SetTimeSlotGameName({0})", i) })
-                                <span class="highlight"></span> <span class="bar"></span>
-                                <span id="@string.Format("GameNameValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a game for this time slot</span>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-12">
-                            <div class="group">
-                                <label>Slot Length</label>
-                                @Html.TextBoxFor(m => m.TimeSlots[i].Length, new { id = string.Format("Length{0}", i), type = "number", min = "15", onblur = string.Format("SetTimeSlotLength({0})", i) })
-                                <span class="highlight"></span> <span class="bar"></span>
-                                <span id="@string.Format("LengthValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a duration for this time slot between 15 and 480 min</span>
-                            </div>
-                        </div>
+                
+
+                <div id="@string.Format("TimeSlot{0}", i)" style="border-radius:6px; margin-bottom:20px; padding:10px; background-color: #dddddd">
+                    <div style="position:absolute; float:left; padding:5px">
                         @if (i > 0)
                         {
-                            <div class="col-lg-2 col-sm-12">
-                                <button type="button" class="modalClose smallclose" onclick="DeleteTimeSlot(@i)">@*<img src="~/html/img/modal-close-white.svg" alt="" />*@</button>
-                            </div>
+                            <span id="@string.Format("toggleButton{0}", i)" class="glyphicon glyphicon-remove" onclick="DeleteTimeSlot(@i)" style="cursor: pointer"></span>
                         }
                     </div>
+                    <div style="display:inline-block; margin-left:30px">
+                        <div>
+                            <div>
+                                <div>
+                                    <label style="width:170px">Game</label>
+                                    @Html.TextBoxFor(m => m.TimeSlots[i].GameName, new { id = string.Format("GameName{0}", i), style = "width:300px", type = "text", onblur = string.Format("SetTimeSlotGameName({0})", i) })
+                                    <span id="@string.Format("GameNameValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a game for this time slot</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <label style="width:170px">Slot Length</label>
+                                    @Html.TextBoxFor(m => m.TimeSlots[i].Length, new { id = string.Format("Length{0}", i), style = "width:300px", type = "number", min = "15", onblur = string.Format("SetTimeSlotLength({0})", i) })
+                                    <span id="@string.Format("LengthValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a duration for this time slot between 15 and 480 min</span>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="row">
-                        <div class="col-lg-3 col-sm-12">
-                            <div class="group">
-                                <label>Number of Player Slots</label>
-                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfPlayers, new { id = string.Format("NumberOfPlayers{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfPlayers({0})", i) })
-                                <span class="highlight"></span> <span class="bar"></span>
-                                <span id="@string.Format("NumberOfPlayersValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter the number of player slots for this time slot</span>
+                        <div>
+                            <div>
+                                <div>
+                                    <label style="width:170px">Number of Player Slots</label>
+                                    @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfPlayers, new { id = string.Format("NumberOfPlayers{0}", i), style = "width:300px", type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfPlayers({0})", i) })
+                                    <span id="@string.Format("NumberOfPlayersValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter the number of player slots for this time slot</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <label style="width:170px">Is Steam Game</label>
+                                    @Html.CheckBoxFor(m => m.TimeSlots[i].IsSteamGame, new { id = string.Format("IsSteamGame{0}", i), style = "margin-top:2px", onchange = string.Format("SetIsSteamGame({0})", i) })
+                                </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-sm-12">
-                            <div class="group">
-                                <label>Is Steam Game</label>
-                                @Html.CheckBoxFor(m => m.TimeSlots[i].IsSteamGame, new { id = string.Format("IsSteamGame{0}", i), onchange = string.Format("SetIsSteamGame({0})", i) })
-                                <span class="highlight"></span> <span class="bar"></span>
-                            </div>
-                        </div>
-                    </div>
+                    </div>                
                 </div>
             }
-        </div>
-
-        <div class="topmargin40">
-            <button type="button" onclick="AddTimeSlot()" class="btn btn-primary margintopMobile20 text-left relative">Add Time Slot</button>
-        </div>
-        <div class="row">
-            <div class="col-lg-6 col-sm-12">
-                @Html.ActionLink("Go Back", "Index", "RosterManagement", null, new { @class = "btn btn-primary" })
-            </div>
-            <div class="col-lg-6 col-sm-12">
-                <input type="button" onclick="ValidateAndSave(@Model.TimeSlotCount)" value="Save" class="btn btn-primary width130" />
-            </div>
         </div>
     }
 </div>
@@ -230,6 +219,9 @@
                 type: 'POST',
                 data: {
                 },
+                success: function (result) {
+                    window.location = "/";
+                }
             });
         }
     }

@@ -11,5 +11,6 @@ namespace ProjectBear.CMS.ViewModels
         public string PlayerName { get; set; }  
         
         public bool DidNotPitch { get; set; }
+        public bool PromotedFromReserve { get; set; }
     }
 }

@@ -3,84 +3,72 @@
     @using (Ajax.BeginForm("RosterTemplate", "RosterTemplateManagement", null, new AjaxOptions { }, new { id = "RosterTemplateForm" }))
     {
         //@Html.AntiForgeryToken()
-        <div class="form-horizontal">
-            <h4 class="margintop40">Roster Templates</h4>
-            <hr />
+        <h2 style="margin-bottom:20px">Roster Template Creation</h2>
+
+        <div style="margin-bottom:10px">
+            <button style="width:120px; margin-right:10px" type="button" onclick="AddTimeSlot()">Add Time Slot</button>
+            <button style="width:120px;" type="button" onclick="ValidateAndSave(@Model.TimeSlotCount)">Save Roster Template</button>
         </div>
 
-        <div class="group">
+        <div style="margin-bottom:10px">
             @Html.Hidden("Edited", Model.Edited)
             <label>Template Name</label>
             @Html.TextBoxFor(m => m.TemplateName, new { id = "TemplateName", type = "text", onblur = "SetTemplateName()" })
-            <span class="highlight"></span> <span class="bar"></span>
             <span id="TemplateNameValidation" style="display:none" class="field-validation-error text-danger">Enter a name for this template</span>
         </div>
 
 
-        <div class="group">
+        <div>
             @for (int i = 0; i < Model.TimeSlots.Count; i++)
             {
-                <div id="@string.Format("TimeSlot{0}", i)" class="workExperSection margintop30">
-                    <div class="row">
-                        <div class="col-lg-3 col-sm-12">
-                            <div class="group">
-                                <label>Game</label>
-                                @Html.TextBoxFor(m => m.TimeSlots[i].GameName, new { id = string.Format("GameName{0}", i), type = "text", onblur = string.Format("SetTimeSlotGameName({0})", i) })
-                                <span class="highlight"></span> <span class="bar"></span>
-                                @Html.ValidationMessageFor(m => m.TimeSlots[i].GameName, "", new { @class = "text-danger" })
-                                <span id="@string.Format("GameNameValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a game for this time slot</span>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-12">
-                            <div class="group">
-                                <label>Slot Length</label>
-                                @Html.TextBoxFor(m => m.TimeSlots[i].Length, new { id = string.Format("Length{0}", i), type = "number", min = "15", onblur = string.Format("SetTimeSlotLength({0})", i) })
-                                <span class="highlight"></span> <span class="bar"></span>
-                                <span id="@string.Format("LengthValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a duration for this time slot between 15 and 480 min</span>
-                            </div>
-                        </div>
+
+
+                <div id="@string.Format("TimeSlot{0}", i)" style="border-radius:6px; margin-bottom:20px; padding:10px; background-color: #dddddd">
+                    <div style="position:absolute; float:left; padding:5px">
                         @if (i > 0)
                         {
-                            <div class="col-lg-2 col-sm-12">
-                                <button type="button" class="modalClose smallclose" onclick="DeleteTimeSlot(@i)">@*<img src="~/html/img/modal-close-white.svg" alt="" />*@</button>
-                            </div>
+                            <span id="@string.Format("toggleButton{0}", i)" class="glyphicon glyphicon-remove" onclick="DeleteTimeSlot(@i)" style="cursor: pointer"></span>
                         }
                     </div>
-
-                    <div class="row">
-                        <div class="col-lg-3 col-sm-12">
-                            <div class="group">
-                                <label>Number of Player Slots</label>
-                                @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfPlayers, new { id = string.Format("NumberOfPlayers{0}", i), type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfPlayers({0})", i) })
-                                <span class="highlight"></span> <span class="bar"></span>
-                                <span id="@string.Format("NumberOfPlayersValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter the number of player slots for this time slot</span>
+                    <div style="display:inline-block; margin-left:30px">
+                        <div>
+                            <div>
+                                <div>
+                                    <label style="width:170px">Game</label>
+                                    @Html.TextBoxFor(m => m.TimeSlots[i].GameName, new { id = string.Format("GameName{0}", i), style = "width:300px", type = "text", onblur = string.Format("SetTimeSlotGameName({0})", i) })
+                                    <span id="@string.Format("GameNameValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a game for this time slot</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <label style="width:170px">Slot Length</label>
+                                    @Html.TextBoxFor(m => m.TimeSlots[i].Length, new { id = string.Format("Length{0}", i), style = "width:300px", type = "number", min = "15", onblur = string.Format("SetTimeSlotLength({0})", i) })
+                                    <span id="@string.Format("LengthValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter a duration for this time slot between 15 and 480 min</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-sm-12">
-                            <div class="group">
-                                <label>Is Steam Game</label>
-                                @Html.CheckBoxFor(m => m.TimeSlots[i].IsSteamGame, new { id = string.Format("IsSteamGame{0}", i), onchange = string.Format("SetIsSteamGame({0})", i) })
-                                <span class="highlight"></span> <span class="bar"></span>
+
+                        <div>
+                            <div>
+                                <div>
+                                    <label style="width:170px">Number of Player Slots</label>
+                                    @Html.TextBoxFor(m => m.TimeSlots[i].NumberOfPlayers, new { id = string.Format("NumberOfPlayers{0}", i), style = "width:300px", type = "number", min = "1", onblur = string.Format("SetTimeSlotNumberOfPlayers({0})", i) })
+                                    <span id="@string.Format("NumberOfPlayersValidation{0}", i)" style="display:none" class="field-validation-error text-danger">Enter the number of player slots for this time slot</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <label style="width:170px">Is Steam Game</label>
+                                    @Html.CheckBoxFor(m => m.TimeSlots[i].IsSteamGame, new { id = string.Format("IsSteamGame{0}", i), style = "margin-top:2px", onchange = string.Format("SetIsSteamGame({0})", i) })
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             }
         </div>
-
-        <div class="topmargin40">
-            <button type="button" onclick="AddTimeSlot()" class="btn btn-primary margintopMobile20 text-left relative">Add Time Slot</button>
-        </div>
-        <div class="row">
-            <div class="col-lg-6 col-sm-12">
-                <input type="button" onclick="GoBack()" value="Go Back" class="btn btn-primary width130" />
-            </div>
-            <div class="col-lg-6 col-sm-12">
-                <input type="button" onclick="ValidateAndSave(@Model.TimeSlotCount)" value="Save" class="btn btn-primary width130" />
-            </div>
-        </div>
     }
-    <div id="saveCheckModal" class="modal fade bd-example-modal-lg " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden=true>
+    @*<div id="saveCheckModal" class="modal fade bd-example-modal-lg " tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden=true>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <button type="button" class="close modalClose" data-dismiss="modal"><img src="~/html/img/modal-close.svg" alt="" /></button>
@@ -107,7 +95,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>*@
 </div>
 
 
@@ -267,30 +255,9 @@
                 },
                 success: function() {
                     document.getElementById('Edited').value = false;
+                    window.location = "/Content/RosterTemplateManagement";
                 }
             });
-        }
-    }
-
-    function GoBack() {
-        if (document.getElementById('Edited').value.toUpperCase() == "TRUE") {
-            $('#saveCheckModal').modal('show');
-            $('#buttonYes').click(function () {
-                $.ajax({
-                    url: '@Url.Action("SaveTemplate", "RosterTemplateManagement")',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                    },
-                });
-                window.location.href = '@Url.Action("Index", "RosterTemplateManagement")';
-            });
-            $('#buttonNo').click(function () {
-                window.location.href = '@Url.Action("Index", "RosterTemplateManagement")';
-            });
-        }
-        else {
-            window.location.href = '@Url.Action("Index", "RosterTemplateManagement")';
         }
     }
 </script>

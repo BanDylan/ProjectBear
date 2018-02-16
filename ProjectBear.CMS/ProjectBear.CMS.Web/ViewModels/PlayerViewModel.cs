@@ -80,6 +80,7 @@ namespace ProjectBear.CMS.ViewModels
                             Game = booking.TimeSlot.GameName,
                             PlayerName = name,
                             DidNotPitch = booking.DidNotPitch,
+                            PromotedFromReserve = booking.PromotedFromReserve,
                         });
                     }
                     else
@@ -90,6 +91,7 @@ namespace ProjectBear.CMS.ViewModels
                             Game = booking.TimeSlot.GameName,
                             PlayerName = booking.NonSteamName,
                             DidNotPitch = booking.DidNotPitch,
+                            PromotedFromReserve = booking.PromotedFromReserve,
                         });
                     }
                 }

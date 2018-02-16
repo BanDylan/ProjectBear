@@ -27,11 +27,9 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
             Session["CurrentRoster"] = model;
         }
 
-
-        [Authorize, HttpGet, Route("~/")]//[HttpGet, PageAuthorize("Administration"), Route("Index")]
-        public ActionResult Index()
+        private RosterManagementIndexViewModel SetupIndexViewModel(bool partial = false)
         {
-            var rosters = db.Roster.ToList();
+            var rosters = db.Roster.ToList().OrderBy(x => x.Date);
             var viewModel = new RosterManagementIndexViewModel()
             {
                 RosterList = new List<RosterManagementViewModel>(),
@@ -58,7 +56,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
             });
             viewModel.SelectedTemplate = viewModel.TemplateList.First();
 
-            foreach(var template in templates)
+            foreach (var template in templates)
             {
                 viewModel.TemplateList.Add(new RosterTemplateManagementViewModel
                 {
@@ -67,8 +65,16 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                     TimeSlots = template.TimeSlots.ToList(),
                 });
             }
+            return viewModel;
 
-            return View("~/Modules/Content/RosterManagement/RosterManagementIndex.cshtml", viewModel);
+            
+        }
+
+        [OutputCache(NoStore = true, Duration = 0)]
+        [Authorize, HttpGet, Route("~/")]
+        public ActionResult Index()
+        {
+            return View("~/Modules/Content/RosterManagement/RosterManagementIndex.cshtml", SetupIndexViewModel());
         }
 
         [HttpPost]
@@ -78,6 +84,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
             return true;
         }
 
+        [HttpPost]
         public ActionResult Add()
         {
             var viewModel = new RosterManagementViewModel
@@ -148,7 +155,22 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                 db.Entry(roster).State = EntityState.Deleted;
                 db.SaveChanges();
             }
-            return RedirectToAction("Index", "RosterManagement");
+            return View("~/Modules/Content/RosterManagement/RosterManagementIndex.cshtml", SetupIndexViewModel());
+        }
+
+        [HttpPost, PageAuthorize("Administration"), Route("DeletePublished")]
+        public ActionResult DeletePublished(Guid id)
+        {
+            if (id != null)
+            {
+                Roster roster = new Roster
+                {
+                    RosterId = id
+                };
+                db.Entry(roster).State = EntityState.Deleted;
+                db.SaveChanges();
+            }
+            return PartialView("~/Modules/Content/RosterManagement/RosterManagementIndex.cshtml", SetupIndexViewModel());
         }
 
         [HttpGet, PageAuthorize("Administration"), Route("Publish")]
@@ -161,7 +183,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterManagement
                 db.Entry(roster).State = EntityState.Modified;
                 db.SaveChanges();
             }
-            return RedirectToAction("Index", "RosterManagement");
+            return View("~/Modules/Content/RosterManagement/RosterManagementIndex.cshtml", SetupIndexViewModel());
         }
 
 

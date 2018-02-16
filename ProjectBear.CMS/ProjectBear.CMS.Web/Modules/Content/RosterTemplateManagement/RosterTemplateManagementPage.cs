@@ -29,6 +29,7 @@ namespace ProjectBear.CMS.Modules.Content.RosterTemplateManagement
 
         #region Index
 
+        [OutputCache(NoStore = true, Duration = 0)]
         [HttpGet, PageAuthorize("Administration")]
         public ActionResult Index()
         {

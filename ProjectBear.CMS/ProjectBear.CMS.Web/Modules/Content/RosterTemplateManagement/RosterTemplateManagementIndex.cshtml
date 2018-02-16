@@ -1,28 +1,26 @@
 ﻿@model IEnumerable<ProjectBear.CMS.ViewModels.RosterTemplateManagementViewModel>
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-@using System.Globalization;
 
-<h4>Roster Templates</h4>
+<h2>Roster Templates</h2>
 <hr />
-@Html.ActionLink("Add", "Add", "RosterTemplateManagement", null, new { @class = "btn btn-primary" })
-<br />
-<div class="row">
-    <div class="col-md-8 col-sm-12">
-        <table class="table table bordered">
+@using (Html.BeginForm("Add", "RosterTemplateManagement", FormMethod.Get, new { style = "display:inline;" }))
+{
+    <input type="submit" id="Add" value="Create New Template" style="margin-bottom:20px" />
+}
+
+<div>
+    <div>
+        <table class="table bordered">
             <tr>
                 <th>Template Name</th>
                 <th>Time Slots</th>
-                <th colspan="2"></th>
             </tr>
             @foreach (var template in Model)
             {
                 <tr>
-                    <td>@template.TemplateName</td>
-                    <td>@template.TimeSlotCount</td>                    
-                    <td>@Html.ActionLink("Edit", "Edit", "RosterTemplateManagement", new { id = template.RosterTemplateId }, null)</td>
-                    <td>@Html.ActionLink("Delete", "Delete", "RosterTemplateManagement", new { id = template.RosterTemplateId }, null)</td>
+                    <td width="40%">@template.TemplateName</td>
+                    <td width="10%">@template.TimeSlotCount</td>
+                    <td width="5%">@Html.ActionLink("Edit", "Edit", "RosterTemplateManagement", new { id = template.RosterTemplateId }, null)</td>
+                    <td width="100%">@Html.ActionLink("Delete", "Delete", "RosterTemplateManagement", new { id = template.RosterTemplateId }, null)</td>
                 </tr>
             }
         </table>

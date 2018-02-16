@@ -16,7 +16,6 @@ namespace ProjectBear.CMS.Modules.Content.PlayerManagement
     {
         ProjectBearDataContext db = new ProjectBearDataContext();
 
-
         [PageAuthorize("Administration")]
         public ActionResult Index(string name = "")
         {
@@ -52,7 +51,7 @@ namespace ProjectBear.CMS.Modules.Content.PlayerManagement
         [HttpPost]
         [ValidateAntiForgeryToken]
         [PageAuthorize("Administration")]
-        public bool ToggleBan(Guid profileId)
+        public ActionResult ToggleBan(Guid profileId)
         {
             var profile = db.Profile.FirstOrDefault(x => x.ProfileId == profileId);
             profile.Banned = !profile.Banned;
@@ -73,7 +72,8 @@ namespace ProjectBear.CMS.Modules.Content.PlayerManagement
             }
             db.Entry(profile).State = EntityState.Modified;
             db.SaveChanges();
-            return profile.Banned;
+            var player = new PlayerViewModel(profileId, "", true, true);
+            return PartialView("~/Modules/Content/PlayerManagement/PlayerManagementForm.cshtml", player);
         }
 
         [HttpPost]
@@ -91,8 +91,8 @@ namespace ProjectBear.CMS.Modules.Content.PlayerManagement
             db.ProfileStrike.Add(strike);
             db.SaveChanges();
 
-            var player = db.Profile.FirstOrDefault(x => x.ProfileId == profileId);
-            return View("~/Modules/Content/PlayerManagement/PlayerManagementForm.cshtml", player);
+            var player = new PlayerViewModel(profileId, "", true, true);
+            return PartialView("~/Modules/Content/PlayerManagement/PlayerManagementForm.cshtml", player);
         }
 
         [HttpPost]
@@ -101,10 +101,10 @@ namespace ProjectBear.CMS.Modules.Content.PlayerManagement
         public ActionResult RemoveStrike(Guid profileStrikeId)
         {
             var strike = db.ProfileStrike.FirstOrDefault(x => x.ProfileStrikeId == profileStrikeId);
-            var player = strike.Profile;
+            var player = new PlayerViewModel(strike.Profile.ProfileId, "", true, true);
             db.Entry(strike).State = EntityState.Deleted;
             db.SaveChanges();
-            return View("~/Modules/Content/PlayerManagement/PlayerManagementForm.cshtml", player);
+            return PartialView("~/Modules/Content/PlayerManagement/PlayerManagementForm.cshtml", player);
         }
 
     }
