@@ -10,14 +10,14 @@
             <div>
                 @for (int i = 0; i < Model.Count; i++)
                 {
-                    <div id="@string.Format("ros{0}", i)" class="jumbotron" style="margin-top:40px; padding:20px">
+                    <div id="@string.Format("ros{0}", i)" class="jumbotron" style="margin-top:40px; padding:20px; background-color:#000000">
                         <label style="margin-bottom:20px">@Model[i].Date.ToLongDateString()</label>
                         <span id="@string.Format("toggleButton{0}", i)" class="glyphicon glyphicon-minus" onclick="@string.Format("ToggleDisplayRosterTimeSlots(\"{0}\", \"{1}\")", i, Model[i].RosterId);" style="float:right; cursor: pointer"></span>
 
                         <div id="@string.Format("roster{0}timeslots", i)" style="display: block">
                             @for (int j = 0; j < Model[i].TimeSlots.Count; j++)
                             {
-                                <div id="@string.Format("r{0}-ts{1}", i, j)" class="container jumbotron" style="margin-bottom:10px; padding:20px; background-color:#cccccc">
+                                <div id="@string.Format("r{0}-ts{1}", i, j)" class="container jumbotron" style="margin-bottom:10px; padding:20px; background-color:#FFFFFF">
                                     <div style="float:left">
                                         <label style="display: block; line-height: 1">@Model[i].TimeSlots[j].StartTime.ToString("HH:mm") - @Model[i].TimeSlots[j].EndTime.ToString("HH:mm")</label>
                                         <label style="line-height: 1">@Model[i].TimeSlots[j].GameName: </label>
@@ -220,13 +220,14 @@
         if (canBookingBeMade.toLowerCase() == 'true') {
             form.find('#timeSlotId')[0].value = timeSlotId;
             form.find('#isPlayerBooking')[0].value = isPlayerBooking;
-            form.find('#nonSteamName').[0].value = "";
+            form.find('#nonSteamName')[0].value = "";
             form.find('#nonSteamNameValidation').hide();
-            if (isSteamGame.toLowerCase() == 'true')
+            if (isSteamGame.toLowerCase() == 'true') {
                 if (isPlayerBooking.toLowerCase() == 'true')
                     AttemptPlayerBooking();
                 else
                     AttemptReserveBooking();
+            }              
             else {
                 form.find('#nonSteamNameModal').on('shown.bs.modal', function () {  
                     form.find('#nonSteamName').focus();
